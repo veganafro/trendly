@@ -1,0 +1,8 @@
+# directories
+build
+.idea
+.gradle
+
+# files
+trendly.iml
+local.properties
