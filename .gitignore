@@ -4,5 +4,9 @@ build
 .gradle
 
 # files
-**.iml
+trendly.iml
+app/app.iml
+model/model.iml
+presenter/presenter.iml
+networking/networking.iml
 local.properties
