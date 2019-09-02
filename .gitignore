@@ -5,8 +5,8 @@ build
 
 # files
 trendly.iml
-app/app.iml
+view/view.iml
 model/model.iml
 presenter/presenter.iml
-networking/networking.iml
+controller/controller.iml
 local.properties
