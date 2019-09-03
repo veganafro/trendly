@@ -5,4 +5,9 @@ build
 
 # files
 trendly.iml
+view/view.iml
+model/model.iml
+presenter/presenter.iml
+controller/controller.iml
 local.properties
+apikey.properties
