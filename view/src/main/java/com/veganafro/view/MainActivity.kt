@@ -1,8 +1,8 @@
-package com.veganafro.trendly
+package com.veganafro.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.veganafro.networking.presenter.MainActivityPresenter
+import com.veganafro.controller.presenter.MainActivityPresenter
 
 class MainActivity : AppCompatActivity() {
 

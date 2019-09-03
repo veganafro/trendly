@@ -1,4 +1,4 @@
-package com.veganafro.trendly
+package com.veganafro.view
 
 import org.junit.Test
 

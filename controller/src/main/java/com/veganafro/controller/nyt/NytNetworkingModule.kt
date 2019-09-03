@@ -1,5 +1,6 @@
-package com.veganafro.networking.nyt
+package com.veganafro.controller.nyt
 
+import com.veganafro.controller.BuildConfig
 import com.veganafro.model.NytTopic
 import dagger.Module
 import dagger.Provides
@@ -24,10 +25,10 @@ class NytNetworkingModule {
     }
 
     @Provides
-    fun provideNytMostShared(retrofit: Retrofit): Call<List<NytTopic>> {
+    fun provideNytMostShared(retrofit: Retrofit): Call<NytTopic> {
         return retrofit
             .create(NytService::class.java)
-            .mostShared(1)
+            .mostShared(1, BuildConfig.NYT_CONSUMER_KEY)
     }
 
 }

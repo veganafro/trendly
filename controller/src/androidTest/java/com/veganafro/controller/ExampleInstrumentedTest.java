@@ -1,4 +1,4 @@
-package com.veganafro.networking;
+package com.veganafro.controller;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;

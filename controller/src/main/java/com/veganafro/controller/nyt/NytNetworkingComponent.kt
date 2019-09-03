@@ -1,6 +1,6 @@
-package com.veganafro.networking.nyt
+package com.veganafro.controller.nyt
 
-import com.veganafro.networking.presenter.MainActivityPresenter
+import com.veganafro.controller.presenter.MainActivityPresenter
 import dagger.Component
 import javax.inject.Singleton
 

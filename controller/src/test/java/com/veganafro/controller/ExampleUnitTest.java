@@ -1,4 +1,4 @@
-package com.veganafro.networking;
+package com.veganafro.controller;
 
 import org.junit.Test;
 
