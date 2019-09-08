@@ -4,7 +4,7 @@ import com.veganafro.controller.BuildConfig
 import com.veganafro.model.NytTopic
 import dagger.Module
 import dagger.Provides
-import retrofit2.Call
+import io.reactivex.Observable
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
@@ -25,10 +25,9 @@ class NytNetworkingModule {
     }
 
     @Provides
-    fun provideNytMostShared(retrofit: Retrofit): Call<NytTopic> {
+    fun provideNytMostShared(retrofit: Retrofit): Observable<NytTopic> {
         return retrofit
             .create(NytService::class.java)
             .mostShared(1, BuildConfig.NYT_CONSUMER_KEY)
     }
-
 }

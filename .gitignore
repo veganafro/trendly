@@ -7,7 +7,7 @@ build
 trendly.iml
 view/view.iml
 model/model.iml
-presenter/presenter.iml
+networking/networking.iml
 controller/controller.iml
 local.properties
 apikey.properties
