@@ -1,11 +1,12 @@
-package com.veganafro.controller.nyt
+package com.veganafro.networking.nyt
 
-import com.veganafro.controller.BuildConfig
 import com.veganafro.model.NytTopic
+import com.veganafro.networking.BuildConfig
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Observable
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
@@ -20,6 +21,7 @@ class NytNetworkingModule {
         return Retrofit
             .Builder()
             .addConverterFactory(MoshiConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .baseUrl(nytBaseURL)
             .build()
     }

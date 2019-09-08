@@ -4,6 +4,7 @@ build
 .gradle
 
 # files
+**.iml
 trendly.iml
 view/view.iml
 model/model.iml

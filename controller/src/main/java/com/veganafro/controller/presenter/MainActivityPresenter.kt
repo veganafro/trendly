@@ -3,30 +3,48 @@ package com.veganafro.controller.presenter
 import android.util.Log
 import com.veganafro.model.NytTopic
 import com.veganafro.controller.nyt.DaggerNytNetworkingComponent
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class MainActivityPresenter @Inject constructor() {
-    @Inject lateinit var nytMostShared: Call<NytTopic>
+class MainActivityPresenter : GenericPresenter {
+
+    @Inject lateinit var nytMostShared: Observable<NytTopic>
+    private val subscriptions: CompositeDisposable = CompositeDisposable()
 
     init {
-        DaggerNytNetworkingComponent.create().inject(this)
-        callNytMostShared()
+        DaggerNytNetworkingComponent.create().injectNytNetworking(this)
     }
 
-    private fun callNytMostShared() {
-        nytMostShared.enqueue(object : Callback<NytTopic> {
-            override fun onFailure(call: Call<NytTopic>, t: Throwable) {
-                // TODO("not implemented")
-                Log.v("MainActivityPresenter", "nyt call unsuccessful: ${call.request().url()} | ${call.request().headers()} | ${t.localizedMessage}")
-            }
+    override fun loadData() {
+        subscriptions.clear()
 
-            override fun onResponse(call: Call<NytTopic>, response: Response<NytTopic>) {
-                // TODO("not implemented")
-                Log.v("MainActivityPresenter", "nyt call successful: ${response.code()} | ${response.raw()} | ${response.body()}")
-            }
-        })
+        val subscription: Disposable = nytMostShared
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { nytTopic: NytTopic? ->
+                    Log.v("MainActivityPresenter", "success: ${nytTopic?.results}")
+                },
+                { error: Throwable? ->
+                    Log.v("MainActivityPresenter", "failure: ${error?.message}")
+                }
+            )
+
+        subscriptions.add(subscription)
+    }
+
+    override fun subscribe() {
+        loadData()
+    }
+
+    override fun unsubscribe() {
+        subscriptions.clear()
+    }
+
+    override fun onDestroy() {
     }
 }

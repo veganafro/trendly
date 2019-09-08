@@ -1,4 +1,4 @@
-package com.veganafro.controller.nyt
+package com.veganafro.networking.nyt
 
 import com.veganafro.model.NytTopic
 import io.reactivex.Observable
