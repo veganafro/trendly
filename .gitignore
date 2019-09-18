@@ -1,14 +1,42 @@
-# directories
+# Android Studio directories
 build
 .idea
 .gradle
+captures
+.navigation
 
-# files
+# Android Studio files
 **.iml
+output.json
 trendly.iml
 view/view.iml
 model/model.iml
+injector/injector.iml
 networking/networking.iml
 controller/controller.iml
 local.properties
 apikey.properties
+
+# built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+
+# Windows thumbnail db
+Thumbs.db
+
+# OSX files
+.DS_Store
+
+# NDK
+obj/
+.externalNativeBuild

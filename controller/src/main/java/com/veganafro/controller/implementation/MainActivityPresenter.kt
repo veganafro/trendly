@@ -1,28 +1,27 @@
-package com.veganafro.controller.presenter
+package com.veganafro.controller.implementation
 
 import android.util.Log
+import com.veganafro.controller.BuildConfig
+import com.veganafro.controller.generic.GenericPresenter
 import com.veganafro.model.NytTopic
-import com.veganafro.controller.nyt.DaggerNytNetworkingComponent
-import io.reactivex.Observable
+import com.veganafro.networking.nyt.NytService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class MainActivityPresenter : GenericPresenter {
+class MainActivityPresenter @Inject constructor() :
+    GenericPresenter() {
 
-    @Inject lateinit var nytMostShared: Observable<NytTopic>
+    @Inject lateinit var nytMostShared: NytService
     private val subscriptions: CompositeDisposable = CompositeDisposable()
-
-    init {
-        DaggerNytNetworkingComponent.create().injectNytNetworking(this)
-    }
 
     override fun loadData() {
         subscriptions.clear()
 
         val subscription: Disposable = nytMostShared
+            .mostShared(1, BuildConfig.NYT_CONSUMER_KEY)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

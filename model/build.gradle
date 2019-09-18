@@ -15,7 +15,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
+        consumerProguardFiles 'consumer-rules.pro'
     }
 
     buildTypes {
@@ -35,6 +35,6 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation "com.squareup.retrofit2:converter-moshi:$moshi_converter_version"
+    api "com.squareup.retrofit2:converter-moshi:$moshi_converter_version"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_kotlin_codegen_version"
 }
