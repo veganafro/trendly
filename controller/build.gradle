@@ -19,6 +19,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
         buildConfigField "String", "NYT_CONSUMER_KEY", apiKeyProperties['NYT_CONSUMER_KEY']
     }
 
@@ -31,6 +32,10 @@ android {
 
 }
 
+kapt {
+    generateStubs = true
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -39,14 +44,9 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation "com.google.dagger:dagger:$dagger_version"
-    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    api project(':networking')
 
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
-    implementation "com.squareup.retrofit2:converter-moshi:$moshi_converter_version"
+    api "com.google.dagger:dagger:$dagger_version"
 
-    implementation project(':model')
-}
-repositories {
-    mavenCentral()
+    api "com.squareup.retrofit2:adapter-rxjava2:$retrofit_rxkotlin_adapter_version"
 }
