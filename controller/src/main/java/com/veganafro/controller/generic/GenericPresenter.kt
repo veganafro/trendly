@@ -1,12 +1,12 @@
 package com.veganafro.controller.generic
 
-abstract class GenericPresenter {
+interface GenericPresenter {
 
-    abstract fun loadData()
+    fun loadData()
 
-    abstract fun subscribe()
+    fun subscribe()
 
-    abstract fun unsubscribe()
+    fun unsubscribe()
 
-    abstract fun onDestroy()
+    fun onDestroy()
 }

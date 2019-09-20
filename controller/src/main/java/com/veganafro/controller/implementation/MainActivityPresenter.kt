@@ -3,6 +3,7 @@ package com.veganafro.controller.implementation
 import android.util.Log
 import com.veganafro.controller.BuildConfig
 import com.veganafro.controller.generic.GenericPresenter
+import com.veganafro.controller.generic.GenericView
 import com.veganafro.model.NytTopic
 import com.veganafro.networking.nyt.NytService
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -12,10 +13,11 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MainActivityPresenter @Inject constructor() :
-    GenericPresenter() {
+    GenericPresenter {
 
+    private var view: GenericView? = null
     @Inject lateinit var nytMostShared: NytService
-    private val subscriptions: CompositeDisposable = CompositeDisposable()
+    @Inject lateinit var subscriptions: CompositeDisposable
 
     override fun loadData() {
         subscriptions.clear()
@@ -45,5 +47,10 @@ class MainActivityPresenter @Inject constructor() :
     }
 
     override fun onDestroy() {
+        this.view = null
+    }
+
+    fun setView(genericView: GenericView) {
+        view?.let {} ?: run { view = genericView }
     }
 }
