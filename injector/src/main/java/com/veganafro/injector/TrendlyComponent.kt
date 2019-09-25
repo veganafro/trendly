@@ -7,7 +7,8 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(modules = [
-    NytNetworkingModule::class
+    NytNetworkingModule::class,
+    RxModule::class
 ])
 interface TrendlyComponent {
 
