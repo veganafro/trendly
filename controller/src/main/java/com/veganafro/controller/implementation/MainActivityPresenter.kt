@@ -19,15 +19,9 @@ class MainActivityPresenter @Inject constructor() :
     @field:[Inject Named("mainScheduler")] lateinit var mainScheduler: Scheduler
     @field:[Inject Named("backgroundScheduler")] lateinit var backgroundScheduler: Scheduler
 
+    private var view: GenericView? = null
     @Inject lateinit var nytMostShared: NytService
     @Inject lateinit var subscriptions: CompositeDisposable
-
-    constructor(view: GenericView, mainScheduler: Scheduler, backgroundScheduler: Scheduler)
-            : this() {
-        this.view = view
-        this.mainScheduler = mainScheduler
-        this.backgroundScheduler = backgroundScheduler
-    }
 
     override fun loadData() {
         view?.onFetchDataStarted()
@@ -67,7 +61,7 @@ class MainActivityPresenter @Inject constructor() :
         this.view = null
     }
 
-    fun setView(view: GenericView) {
-        this.view = view
+    fun setView(genericView: GenericView) {
+        view?.let {} ?: run { view = genericView }
     }
 }
