@@ -48,5 +48,7 @@ dependencies {
 
     api "com.google.dagger:dagger:$dagger_version"
 
+    testImplementation "io.mockk:mockk:$mockk_version"
+
     api "com.squareup.retrofit2:adapter-rxjava2:$retrofit_rxkotlin_adapter_version"
 }
