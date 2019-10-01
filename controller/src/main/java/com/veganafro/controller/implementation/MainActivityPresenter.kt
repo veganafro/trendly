@@ -22,13 +22,6 @@ class MainActivityPresenter @Inject constructor() :
     @Inject lateinit var nytMostShared: NytService
     @Inject lateinit var subscriptions: CompositeDisposable
 
-    constructor(view: GenericView, mainScheduler: Scheduler, backgroundScheduler: Scheduler)
-            : this() {
-        this.view = view
-        this.mainScheduler = mainScheduler
-        this.backgroundScheduler = backgroundScheduler
-    }
-
     override fun loadData() {
         view?.onFetchDataStarted()
         subscriptions.clear()
@@ -49,6 +42,9 @@ class MainActivityPresenter @Inject constructor() :
                 {
                     Log.v("MainActivityPresenter", "completed")
                     view?.onFetchDataCompleted()
+                },
+                {
+                    Log.v("MainActivityPresenter", "subscription started")
                 }
             )
 
@@ -68,6 +64,6 @@ class MainActivityPresenter @Inject constructor() :
     }
 
     fun setView(view: GenericView) {
-        this.view = view
+        this.view?.let {} ?: run { this.view = view }
     }
 }

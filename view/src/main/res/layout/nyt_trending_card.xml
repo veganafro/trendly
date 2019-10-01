@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nyt_trending_card_linear_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/nyt_card_view"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardUseCompatPadding="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        card_view:cardBackgroundColor="@color/colorPrimary"
+        card_view:cardElevation="@dimen/cardview_default_elevation">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/nyt_title_text"
+                android:ellipsize="end"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="8dp"
+                style="@style/MyTitleTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Title"/>
+
+            <TextView
+                android:id="@+id/nyt_section_text"
+                android:layout_marginTop="6dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                style="@style/MySubtitleTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Section"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
