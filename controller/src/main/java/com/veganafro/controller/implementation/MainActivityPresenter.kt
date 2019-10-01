@@ -6,32 +6,43 @@ import com.veganafro.controller.generic.GenericPresenter
 import com.veganafro.controller.generic.GenericView
 import com.veganafro.model.NytTopic
 import com.veganafro.networking.nyt.NytService
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
+import javax.inject.Named
 
 class MainActivityPresenter @Inject constructor() :
     GenericPresenter {
+
+    private var view: GenericView? = null
+    @field:[Inject Named("mainScheduler")] lateinit var mainScheduler: Scheduler
+    @field:[Inject Named("backgroundScheduler")] lateinit var backgroundScheduler: Scheduler
 
     private var view: GenericView? = null
     @Inject lateinit var nytMostShared: NytService
     @Inject lateinit var subscriptions: CompositeDisposable
 
     override fun loadData() {
+        view?.onFetchDataStarted()
         subscriptions.clear()
 
         val subscription: Disposable = nytMostShared
             .mostShared(1, BuildConfig.NYT_CONSUMER_KEY)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(backgroundScheduler)
+            .observeOn(mainScheduler)
             .subscribe(
                 { nytTopic: NytTopic? ->
                     Log.v("MainActivityPresenter", "success: ${nytTopic?.results}")
+                    view?.onFetchDataSuccess(nytTopic?.results)
                 },
                 { error: Throwable? ->
                     Log.v("MainActivityPresenter", "failure: ${error?.message}")
+                    view?.onFetchDataError(error!!)
+                },
+                {
+                    Log.v("MainActivityPresenter", "completed")
+                    view?.onFetchDataCompleted()
                 }
             )
 

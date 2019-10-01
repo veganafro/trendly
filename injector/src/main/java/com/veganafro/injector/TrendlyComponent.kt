@@ -12,7 +12,6 @@ import javax.inject.Singleton
 ])
 interface TrendlyComponent {
 
-    @Singleton
     fun mainActivityPresenter(): MainActivityPresenter
 
     fun inject(app: AppCompatActivity)

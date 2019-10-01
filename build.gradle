@@ -7,6 +7,7 @@ buildscript {
     ext.retrofit_version = '2.6.1'
     ext.rxkotlin_version = '2.4.0'
     ext.rxandroid_version = '2.1.1'
+    ext.mockk_version = '1.9.3.kotlin12'
     ext.moshi_converter_version = '2.6.1'
     ext.moshi_kotlin_codegen_version = '1.8.0'
     ext.retrofit_rxkotlin_adapter_version = '2.6.1'
