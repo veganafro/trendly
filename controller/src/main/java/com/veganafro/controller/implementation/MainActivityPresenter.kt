@@ -20,6 +20,10 @@ class MainActivityPresenter @Inject constructor() :
     @field:[Inject Named("backgroundScheduler")] lateinit var backgroundScheduler: Scheduler
 
     private var view: GenericView? = null
+    @field:[Inject Named("mainScheduler")] lateinit var mainScheduler: Scheduler
+    @field:[Inject Named("backgroundScheduler")] lateinit var backgroundScheduler: Scheduler
+
+    private var view: GenericView? = null
     @Inject lateinit var nytMostShared: NytService
     @Inject lateinit var subscriptions: CompositeDisposable
 
@@ -43,6 +47,9 @@ class MainActivityPresenter @Inject constructor() :
                 {
                     Log.v("MainActivityPresenter", "completed")
                     view?.onFetchDataCompleted()
+                },
+                {
+                    Log.v("MainActivityPresenter", "subscription started")
                 }
             )
 
@@ -61,7 +68,7 @@ class MainActivityPresenter @Inject constructor() :
         this.view = null
     }
 
-    fun setView(genericView: GenericView) {
-        view?.let {} ?: run { view = genericView }
+    fun setView(view: GenericView) {
+        this.view?.let {} ?: run { this.view = view }
     }
 }

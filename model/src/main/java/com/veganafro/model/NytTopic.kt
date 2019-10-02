@@ -13,6 +13,8 @@ data class NytTopic(
         @Json(name = "url")
         val url: String,
         @Json(name = "title")
-        val title: String
+        val title: String,
+        @Json(name = "section")
+        val section: String
     )
 }
