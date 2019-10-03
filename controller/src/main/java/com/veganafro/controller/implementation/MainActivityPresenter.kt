@@ -1,6 +1,5 @@
 package com.veganafro.controller.implementation
 
-import android.util.Log
 import com.veganafro.controller.BuildConfig
 import com.veganafro.controller.generic.GenericPresenter
 import com.veganafro.controller.generic.GenericView
@@ -24,6 +23,10 @@ class MainActivityPresenter @Inject constructor() :
     @field:[Inject Named("backgroundScheduler")] lateinit var backgroundScheduler: Scheduler
 
     private var view: GenericView? = null
+    @field:[Inject Named("mainScheduler")] lateinit var mainScheduler: Scheduler
+    @field:[Inject Named("backgroundScheduler")] lateinit var backgroundScheduler: Scheduler
+
+    private var view: GenericView? = null
     @Inject lateinit var nytMostShared: NytService
     @Inject lateinit var subscriptions: CompositeDisposable
 
@@ -37,19 +40,13 @@ class MainActivityPresenter @Inject constructor() :
             .observeOn(mainScheduler)
             .subscribe(
                 { nytTopic: NytTopic? ->
-                    Log.v("MainActivityPresenter", "success: ${nytTopic?.results}")
                     view?.onFetchDataSuccess(nytTopic?.results)
                 },
                 { error: Throwable? ->
-                    Log.v("MainActivityPresenter", "failure: ${error?.message}")
                     view?.onFetchDataError(error!!)
                 },
                 {
-                    Log.v("MainActivityPresenter", "completed")
                     view?.onFetchDataCompleted()
-                },
-                {
-                    Log.v("MainActivityPresenter", "subscription started")
                 }
             )
 
