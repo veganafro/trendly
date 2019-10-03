@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class NytTopic(
     @Json(name = "results")
-    val results: List<Article>
+    val results: MutableList<Article>
 ) {
     @JsonClass(generateAdapter = true)
     data class Article(

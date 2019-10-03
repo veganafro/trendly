@@ -9,16 +9,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.veganafro.controller.generic.GenericView
 import com.veganafro.controller.implementation.MainActivityPresenter
 import com.veganafro.injector.DaggerTrendlyComponent
 import com.veganafro.model.NytTopic
+import kotlinx.android.synthetic.main.nyt_trending_view.view.nyt_trending_swipe_refresh_view
 
 class NytTrendingFragment
     : Fragment(R.layout.nyt_trending_view), GenericView {
 
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private var viewAdapter: RecyclerView.Adapter<*>? = null
     private lateinit var viewManager: RecyclerView.LayoutManager
+
+    private lateinit var swipeRefreshContainer: SwipeRefreshLayout
 
     private var presenter: MainActivityPresenter = DaggerTrendlyComponent
         .create()
@@ -35,7 +39,12 @@ class NytTrendingFragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
             : View? {
-        return inflater.inflate(R.layout.nyt_trending_view, container, false)
+        val view: View = inflater.inflate(R.layout.nyt_trending_view, container, false)
+
+        swipeRefreshContainer = view.nyt_trending_swipe_refresh_view
+        swipeRefreshContainer.setOnRefreshListener { presenter.subscribe() }
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,17 +55,22 @@ class NytTrendingFragment
     }
 
     override fun onFetchDataCompleted() {
-    }
-
-    override fun onFetchDataSuccess(arg: Any?) {
-        viewAdapter = NytTrendingAdapter(arg as List<NytTopic.Article>)
-
         view!!.findViewById<RecyclerView>(R.id.nyt_trending_recycler_view)
             .apply {
                 setHasFixedSize(true)
                 adapter = viewAdapter
                 layoutManager = viewManager
+
+                swipeRefreshContainer.isRefreshing = false
             }
+    }
+
+    override fun onFetchDataSuccess(arg: Any?) {
+        viewAdapter?.apply {
+            (this as NytTrendingAdapter).updateData(arg as MutableList<NytTopic.Article>)
+        } ?: run {
+            viewAdapter = NytTrendingAdapter(arg as MutableList<NytTopic.Article>)
+        }
     }
 
     override fun onFetchDataError(throwable: Throwable) {

@@ -8,7 +8,7 @@ import com.veganafro.model.NytTopic
 import kotlinx.android.synthetic.main.nyt_trending_card.view.nyt_title_text
 import kotlinx.android.synthetic.main.nyt_trending_card.view.nyt_section_text
 
-class NytTrendingAdapter(private val articles: List<NytTopic.Article>)
+class NytTrendingAdapter(private val articles: MutableList<NytTopic.Article>)
     : RecyclerView.Adapter<NytTrendingAdapter.NytArticleViewHolder>() {
 
     override fun getItemCount(): Int {
@@ -25,6 +25,12 @@ class NytTrendingAdapter(private val articles: List<NytTopic.Article>)
     @Suppress("ReplaceGetOrSet")
     override fun onBindViewHolder(holder: NytArticleViewHolder, position: Int) {
         holder.bind(articles.get(position))
+    }
+
+    fun updateData(articles: MutableList<NytTopic.Article>) {
+        this.articles.clear()
+        this.articles.addAll(articles)
+        notifyDataSetChanged()
     }
 
     class NytArticleViewHolder(private val view: View)
