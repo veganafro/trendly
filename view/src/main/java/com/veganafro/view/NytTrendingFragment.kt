@@ -58,8 +58,8 @@ class NytTrendingFragment
         view!!.findViewById<RecyclerView>(R.id.nyt_trending_recycler_view)
             .apply {
                 setHasFixedSize(true)
-                adapter = viewAdapter
-                layoutManager = viewManager
+                adapter?.apply {} ?: run { this.adapter = viewAdapter }
+                layoutManager?.apply {} ?: run { this.layoutManager = viewManager}
 
                 swipeRefreshContainer.isRefreshing = false
             }
