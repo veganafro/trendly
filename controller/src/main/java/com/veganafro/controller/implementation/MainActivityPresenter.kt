@@ -18,6 +18,15 @@ class MainActivityPresenter @Inject constructor() :
     @field:[Inject Named("mainScheduler")] lateinit var mainScheduler: Scheduler
     @field:[Inject Named("backgroundScheduler")] lateinit var backgroundScheduler: Scheduler
 
+    private var view: GenericView? = null
+    @field:[Inject Named("mainScheduler")] lateinit var mainScheduler: Scheduler
+    @field:[Inject Named("backgroundScheduler")] lateinit var backgroundScheduler: Scheduler
+
+    private var view: GenericView? = null
+    @field:[Inject Named("mainScheduler")] lateinit var mainScheduler: Scheduler
+    @field:[Inject Named("backgroundScheduler")] lateinit var backgroundScheduler: Scheduler
+
+    private var view: GenericView? = null
     @Inject lateinit var nytMostShared: NytService
     @Inject lateinit var subscriptions: CompositeDisposable
 

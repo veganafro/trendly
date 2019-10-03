@@ -8,6 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Named
 import javax.inject.Singleton
+import io.reactivex.disposables.CompositeDisposable
 
 @Module
 class RxModule {
