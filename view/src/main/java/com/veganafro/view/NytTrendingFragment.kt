@@ -3,6 +3,7 @@
 package com.veganafro.view
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +15,13 @@ import com.veganafro.controller.generic.GenericView
 import com.veganafro.controller.implementation.MainActivityPresenter
 import com.veganafro.injector.DaggerTrendlyComponent
 import com.veganafro.model.NytTopic
+import kotlinx.android.synthetic.main.nyt_trending_view.view.nyt_trending_recycler_view
 import kotlinx.android.synthetic.main.nyt_trending_view.view.nyt_trending_swipe_refresh_view
 
 class NytTrendingFragment
     : Fragment(R.layout.nyt_trending_view), GenericView {
+
+    private var shortAnimationTime: Int = 0
 
     private var viewAdapter: RecyclerView.Adapter<*>? = null
     private lateinit var viewManager: RecyclerView.LayoutManager
@@ -44,24 +48,37 @@ class NytTrendingFragment
         swipeRefreshContainer = view.nyt_trending_swipe_refresh_view
         swipeRefreshContainer.setOnRefreshListener { presenter.subscribe() }
 
+        view.nyt_trending_recycler_view.visibility = View.GONE
+        shortAnimationTime = resources.getInteger(android.R.integer.config_longAnimTime)
+
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        swipeRefreshContainer.isRefreshing = true
     }
 
     override fun onFetchDataStarted() {
     }
 
     override fun onFetchDataCompleted() {
-        view!!.findViewById<RecyclerView>(R.id.nyt_trending_recycler_view)
+        view?.nyt_trending_recycler_view
             .apply {
-                setHasFixedSize(true)
-                adapter?.apply {} ?: run { this.adapter = viewAdapter }
-                layoutManager?.apply {} ?: run { this.layoutManager = viewManager}
+                this?.apply {
+                    setHasFixedSize(true)
+                    adapter?.apply {} ?: run { this.adapter = viewAdapter }
+                    layoutManager?.apply {} ?: run { this.layoutManager = viewManager}
 
-                swipeRefreshContainer.isRefreshing = false
+                    alpha = 0f
+                    visibility = View.VISIBLE
+                    animate()
+                        .alpha(1f)
+                        .setDuration(shortAnimationTime.toLong())
+                        .setListener(null)
+
+                    swipeRefreshContainer.isRefreshing = false
+                }
             }
     }
 
@@ -74,5 +91,6 @@ class NytTrendingFragment
     }
 
     override fun onFetchDataError(throwable: Throwable) {
+        Log.v("NytTrendingFragment", "Data fetching error: ${throwable.message}")
     }
 }
