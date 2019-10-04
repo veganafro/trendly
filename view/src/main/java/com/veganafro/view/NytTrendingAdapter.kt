@@ -3,15 +3,13 @@ package com.veganafro.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.veganafro.model.NytTopic
 import kotlinx.android.synthetic.main.nyt_trending_card.view.nyt_title_text
 import kotlinx.android.synthetic.main.nyt_trending_card.view.nyt_section_text
 
 class NytTrendingAdapter(private val articles: MutableList<NytTopic.Article>)
-    : ListAdapter<NytTopic.Article, NytTrendingAdapter.NytArticleViewHolder>(NytArticleDiffCallback()){
+    : RecyclerView.Adapter<NytTrendingAdapter.NytArticleViewHolder>() {
 
     override fun getItemCount(): Int {
         return articles.size
@@ -42,19 +40,5 @@ class NytTrendingAdapter(private val articles: MutableList<NytTopic.Article>)
             view.nyt_title_text.text = article.title
             view.nyt_section_text.text = article.section
         }
-    }
-
-    class NytArticleDiffCallback : DiffUtil.ItemCallback<NytTopic.Article>() {
-        override fun areItemsTheSame(oldItem: NytTopic.Article, newItem: NytTopic.Article): Boolean {
-            return oldItem.title == newItem.title &&
-                    oldItem.section == newItem.section
-        }
-
-        override fun areContentsTheSame(oldItem: NytTopic.Article, newItem: NytTopic.Article): Boolean {
-            return oldItem.url == newItem.url &&
-                    oldItem.title == newItem.title &&
-                    oldItem.section == newItem.section
-        }
-
     }
 }
