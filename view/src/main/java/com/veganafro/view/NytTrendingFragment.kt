@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.veganafro.view
 
 import android.os.Bundle
@@ -23,7 +21,7 @@ class NytTrendingFragment
 
     private var shortAnimationTime: Int = 0
 
-    private var viewAdapter: RecyclerView.Adapter<*>? = null
+    private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
 
     private lateinit var swipeRefreshContainer: SwipeRefreshLayout
@@ -38,6 +36,7 @@ class NytTrendingFragment
         presenter.setView(this)
         presenter.subscribe()
 
+        viewAdapter = NytTrendingAdapter()
         viewManager = LinearLayoutManager(context)
     }
 
@@ -68,7 +67,7 @@ class NytTrendingFragment
                 this?.apply {
                     setHasFixedSize(true)
                     adapter?.apply {} ?: run { this.adapter = viewAdapter }
-                    layoutManager?.apply {} ?: run { this.layoutManager = viewManager}
+                    layoutManager?.apply {} ?: run { this.layoutManager = viewManager }
 
                     alpha = 0f
                     visibility = View.VISIBLE
@@ -82,12 +81,9 @@ class NytTrendingFragment
             }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onFetchDataSuccess(arg: Any?) {
-        viewAdapter?.apply {
-            (this as NytTrendingAdapter).updateData(arg as MutableList<NytTopic.Article>)
-        } ?: run {
-            viewAdapter = NytTrendingAdapter(arg as MutableList<NytTopic.Article>)
-        }
+        (viewAdapter as NytTrendingAdapter).submitList(arg as MutableList<NytTopic.Article>)
     }
 
     override fun onFetchDataError(throwable: Throwable) {
