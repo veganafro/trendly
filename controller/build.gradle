@@ -5,7 +5,12 @@ apply plugin: 'kotlin-kapt'
 
 def apiKeyPropertiesFile = rootProject.file("apikey.properties")
 def apiKeyProperties = new Properties()
-apiKeyProperties.load(new FileInputStream(apiKeyPropertiesFile))
+
+if (apiKeyPropertiesFile.exists()) {
+    apiKeyProperties.load(new FileInputStream(apiKeyPropertiesFile))
+} else {
+    apiKeyProperties.setProperty("NYT_CONSUMER_KEY", "\"test\"")
+}
 
 android {
     compileSdkVersion 29
