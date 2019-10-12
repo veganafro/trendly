@@ -47,7 +47,6 @@ class NytTrendingFragment
         swipeRefreshContainer = view.nyt_trending_swipe_refresh_view
         swipeRefreshContainer.setOnRefreshListener { presenter.subscribe() }
 
-        view.nyt_trending_recycler_view.visibility = View.GONE
         shortAnimationTime = resources.getInteger(android.R.integer.config_longAnimTime)
 
         return view
@@ -55,6 +54,8 @@ class NytTrendingFragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        savedInstanceState?.let {} ?: apply { view.nyt_trending_recycler_view.visibility = View.GONE }
         swipeRefreshContainer.isRefreshing = true
     }
 
@@ -69,12 +70,14 @@ class NytTrendingFragment
                     adapter?.apply {} ?: run { this.adapter = viewAdapter }
                     layoutManager?.apply {} ?: run { this.layoutManager = viewManager }
 
-                    alpha = 0f
-                    visibility = View.VISIBLE
-                    animate()
-                        .alpha(1f)
-                        .setDuration(shortAnimationTime.toLong())
-                        .setListener(null)
+                    if (visibility.equals(View.GONE)) {
+                        alpha = 0f
+                        visibility = View.VISIBLE
+                        animate()
+                            .alpha(1f)
+                            .setDuration(shortAnimationTime.toLong())
+                            .setListener(null)
+                    }
 
                     swipeRefreshContainer.isRefreshing = false
                 }
