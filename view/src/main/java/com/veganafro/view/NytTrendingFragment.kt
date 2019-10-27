@@ -90,6 +90,6 @@ class NytTrendingFragment
     }
 
     override fun onFetchDataError(throwable: Throwable) {
-        Log.v("NytTrendingFragment", "Data fetching error: ${throwable.message}")
+        Log.e("NytTrendingFragment", "Data fetching error: ${throwable.message}")
     }
 }
