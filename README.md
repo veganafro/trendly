@@ -1,4 +1,54 @@
-## Learnings
+# Summary
+
+The intended objective of this project is to learn how to build a simple, modularized, and networked Android
+app that displays a collection of items. The following documentation is a walkthrough of how to accomplish that,
+starting from the leaves of the dependency graph and moving upwards. The resulting app will fetch trending
+articles from the New York Times API and display their titles and sections using `CardView`s.
+
+## Model
+
+Begin by defining on the Android client the shape of the data that the New York Times API sends back.
+In this case, a valid JSON response from the server looks something like this:
+
+```json
+{
+    "status": "...",
+    "results": [
+      {
+        "url": "...",
+        "adx_keywords": "..."
+      }
+    ]
+}
+```
+
+Therefore, the data model containing the needed information will be defined on the client side as follows:
+
+```kotlin
+@JsonClass(generateAdapter = true)
+data class NytTopic(
+    @Json(name = "results")
+    val results: MutableList<Article>
+) {
+    @JsonClass(generateAdapter = true)
+    data class Article(
+        @Json(name = "url")
+        val url: String,
+        @Json(name = "title")
+        val title: String,
+        @Json(name = "section")
+        val section: String
+    )
+}
+```
+
+There are a few things to note. Moshi is a JSON library that will be used to parse JSON into objects.
+The classes are annotated with `@JsonClass(generateAdapter = true)`, which tells Moshi to generate a JSON
+adapter to handle serializing and deserializing to and from JSON of the specified type. The
+`@Json(name = "[value]")` annotation defines the JSON key name for serialization and the property to
+set the value on with deserialization.
+
+## Notes
 
 ### Dagger
 
