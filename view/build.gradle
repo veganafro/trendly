@@ -34,6 +34,6 @@ dependencies {
 
     api project(':injector')
 
-    implementation 'com.google.android.material:material:1.1.0-alpha10'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0+'
+    implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_refresh_version"
 }
