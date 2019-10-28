@@ -131,8 +131,91 @@ dependency injection with Dagger works.
 
 ## View
 
-Creating a list view has been explained below. What's important to note here is that the `MainActivity`
-manages the fragments like `NytTrendingFragment`. This makes it easy to build a flexible UI.
+The most important details here are how to build a view to hold and display a collection of data, as
+well as how that view is managed.
+
+Start by creating a fragment that implements the `GenericView` interface, inherits from `Fragment`, and
+inflates a `RecyclerView` layout.
+
+```kotlin
+class NytTrendingFragment
+    : Fragment(R.layout.nyt_trending_view), GenericView
+```
+
+There are some lifecycle events to be aware of in this fragment and its managing activity, especially
+with respect to configuration changes like when the device is rotated.
+
+In the activity, preventing overlapping fragments is accomplished as follows:
+
+```kotlin
+savedInstanceState?.let {
+    return
+}
+```
+
+This makes sure that there aren't multiple instances of the fragment on the back stack. Read more about
+the Android lifecycle [here](https://medium.com/androiddevelopers/the-android-lifecycle-cheat-sheet-part-iii-fragments-afc87d4f37fd).
+
+Now, the inflated `RecyclerView` layout needs to know how to fill itself with views provided by a layout
+manager. For this, use a `LinearLayoutManager`. These individual views are represented by a `RecyclerView.ViewHolder`
+and are collectively managed by a `RecyclerView.Adapter`.
+
+When creating a custom `RecyclerView.Adapter`, it might be worthwhile to inherit from `ListAdapter`.
+This class, given a callback to diff collections of objects, provides some nice animations when adding
+and removing `RecyclerView.ViewHolder` objects from the view. Proceed as follows:
+
+```kotlin
+class NytTrendingAdapter
+    : ListAdapter<NytTopic.Article, NytTrendingAdapter.NytArticleViewHolder>(NytArticleDiffCallback()) {
+
+    // use the built in `currentList` collection to store objects that are used to inflate views
+    // this makes it possible to use built in methods to submit new data
+    override fun getItemCount(): Int {
+        return currentList.size
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NytArticleViewHolder {
+        val view: View = LayoutInflater
+            .from(parent.context)
+            .inflate(R.layout.nyt_trending_card, parent, false)
+        return NytArticleViewHolder(view)
+    }
+
+    @Suppress("ReplaceGetOrSet")
+    override fun onBindViewHolder(holder: NytArticleViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+
+    // this defines how items in the `RecyclerView` are represented
+    class NytArticleViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+
+        fun bind(article: NytTopic.Article) {
+            view.nyt_title_text.text = article.title
+            view.nyt_section_text.text = article.section
+        }
+    }
+
+    // when new data is given to the adapter, diff the collection using the callback below
+    class NytArticleDiffCallback : DiffUtil.ItemCallback<NytTopic.Article>() {
+        override fun areItemsTheSame(oldItem: NytTopic.Article, newItem: NytTopic.Article): Boolean {
+            return oldItem.title == newItem.title
+        }
+
+        override fun areContentsTheSame(oldItem: NytTopic.Article, newItem: NytTopic.Article): Boolean {
+            return oldItem.title == newItem.title
+        }
+
+    }
+}
+```
+
+Now that the `RecyclerView.Adapter` is set up, set it as a property of the fragment's view like so:
+
+```kotlin
+adapter?.apply {} ?: run { this.adapter = viewAdapter }
+```
+
+Overall, that should be a good introduction to setting up a collection view on Android.
 
 ## Notes
 

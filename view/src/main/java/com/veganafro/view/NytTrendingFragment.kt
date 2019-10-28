@@ -76,6 +76,9 @@ class NytTrendingFragment
         view?.nyt_trending_recycler_view
             .apply {
                 this?.apply {
+                    // this optimization tells the recycler view that all the views it's displaying
+                    // are the same size, so it can avoid inflating the whole view layout when its contents
+                    // change
                     setHasFixedSize(true)
                     adapter?.apply {} ?: run { this.adapter = viewAdapter }
                     layoutManager?.apply {} ?: run { this.layoutManager = viewManager }
