@@ -59,6 +59,16 @@ class NytTrendingFragment
         swipeRefreshContainer.isRefreshing = true
     }
 
+    override fun onStop() {
+        super.onStop()
+        presenter.unsubscribe()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.onDestroy()
+    }
+
     override fun onFetchDataStarted() {
     }
 

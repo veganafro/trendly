@@ -19,6 +19,9 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.title = "trendly"
 
         fragment_container?.let {
+            // if the activity is being restored from a different state,
+            // don't do anything and return, otherwise there could be overlapping
+            // fragments
             savedInstanceState?.let {
                 return
             }

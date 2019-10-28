@@ -48,6 +48,92 @@ adapter to handle serializing and deserializing to and from JSON of the specifie
 `@Json(name = "[value]")` annotation defines the JSON key name for serialization and the property to
 set the value on with deserialization.
 
+## Networking
+
+Now that a response has been built using a data model, the next step is to define how to access the
+New York Times API and fetch some data. Retrofit and RxKotlin are the relevant libraries used for this task.
+Retrofit is a type-safe HTTP client for Android, and RxKotlin is a lightweight library that adds
+convenient extension functions to RxJava (a library for composing asynchronous and event-based programs
+using observable sequences for the Java VM).
+
+Declare a service that contains methods for accessing API endpoints through HTTP requests:
+
+```kotlin
+interface NytService {
+
+    @Headers("Accept: application/json")
+    @GET("svc/mostpopular/v2/shared/{period}.json")
+    fun mostShared(@Path("period") period: Int?, @Query("api-key") key: String): Observable<NytTopic>
+}
+```
+
+The `@Headers("Accept: application/json")` annotation does what it sounds like it does. It adds HTTP
+headers to the request. The relative URL of the resource is specified in the
+`@GET("svc/mostpopular/v2/shared/{period}.json")` annotation. Finally, the `@Path("period")` annotation
+adds the following parameter to the relative URL, and the `@Query("api-key")` adds the annotated argument
+as a query parameter.
+
+## Controller
+
+The controller module contains the presenter, which is responsible for all presentation logic. All
+presenters inherit from the `GenericPresenter` interface. The `MainActivityPresenter` is responsible for
+displaying the main view, the list of trending articles.
+
+The `loadData` method fetches data from the New York Times API using the networking module like so
+(comments explain what's going on):
+
+```kotlin
+override fun loadData() {
+    // let the view know that a network call has been initiated
+    view?.onFetchDataStarted()
+    // stop any other network calls that might be in flight
+    subscriptions.clear()
+
+    // call the API endpoint
+    val subscription: Disposable = nytMostShared
+        .mostShared(1, BuildConfig.NYT_CONSUMER_KEY)
+        // declare that the work of fetching data is done on the background thread
+        .subscribeOn(backgroundScheduler)
+        // declare that the results of the fetch should be sent to the main thread
+        .observeOn(mainScheduler)
+        // initiate the cold observable and supply callbacks that are executed
+        // on success, on error, and on completion
+        .subscribe(
+            { nytTopic: NytTopic? ->
+                // send the view the results of a successful network call
+                view?.onFetchDataSuccess(nytTopic?.results)
+            },
+            { error: Throwable? ->
+                // send the view the error if the network call failed
+                view?.onFetchDataError(error!!)
+            },
+            {
+                // inform the view that the data fetch is completed
+                view?.onFetchDataCompleted()
+            }
+        )
+
+    // add the data fetch to the list of in flight network calls 
+    subscriptions.add(subscription)
+}
+```
+
+The other methods in the presenter are to be used by the view. `subscribe` is used to subscribe the
+view to new data (when the view is on the screen), `unsubscribe` is used to stop data fetches that are
+in flight (maybe because the view has been added to the back stack), and `onDestroy` breaks the link
+between the view and the presenter (when the view is destroyed).
+
+## Injector
+
+The injector module is where all the previously mentioned modules come together to be injected into the app
+module using Dagger. Read more on the [Dagger site](https://dagger.dev/users-guide) or below about how
+dependency injection with Dagger works.
+
+## View
+
+Creating a list view has been explained below. What's important to note here is that the `MainActivity`
+manages the fragments like `NytTrendingFragment`. This makes it easy to build a flexible UI.
+
 ## Notes
 
 ### Dagger
@@ -99,7 +185,8 @@ The views in the list are represented by view holder objects. These objects are 
 you define by extending `RecyclerView.ViewHolder`. Each view holder is in charge of displaying a single
 item with a view.
 
-The view holder objects are managed by an adapter, which you create by extending `RecyclerView.Adapter`.
+The view holder objects are managed by an adapter, which you create by extending `RecyclerView.Adapter` or
+`ListAdapter` (the latter provides nice animations when updating the underlying data if it contains a diff).
 The adapter creates view holders as needed. The adapter also binds the view holders to their data.
 It does this by assigning the view holder to a position, and calling the adapter's `onBindViewHolder()` method.
 That method uses the view holder's position to determine what the contents should be, based on its
