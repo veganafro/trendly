@@ -5,9 +5,9 @@ import com.veganafro.controller.generic.GenericPresenter
 import com.veganafro.controller.generic.GenericView
 import com.veganafro.model.NytTopic
 import com.veganafro.networking.nyt.NytService
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -25,11 +25,16 @@ class MainActivityPresenter @Inject constructor() :
         view?.onFetchDataStarted()
         subscriptions.clear()
 
-        val subscription: Disposable = nytMostShared
+        // create a cold observable that should be used to make the network request
+        val subscription: Observable<NytTopic> = nytMostShared
             .mostShared(1, BuildConfig.NYT_CONSUMER_KEY)
             .subscribeOn(backgroundScheduler)
             .observeOn(mainScheduler)
-            .subscribe(
+
+        // kick off that cold observable into a hot observable at the same place that it's added
+        // to the queue of in flight network requests
+        subscriptions.add(
+            subscription.subscribe(
                 { nytTopic: NytTopic? ->
                     view?.onFetchDataSuccess(nytTopic?.results)
                 },
@@ -40,8 +45,7 @@ class MainActivityPresenter @Inject constructor() :
                     view?.onFetchDataCompleted()
                 }
             )
-
-        subscriptions.add(subscription)
+        )
     }
 
     override fun subscribe() {
