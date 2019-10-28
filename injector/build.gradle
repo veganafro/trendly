@@ -38,5 +38,6 @@ dependencies {
 
     api project(':controller')
 
+    // need this here to be able to correctly create Dagger generated classes
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
 }

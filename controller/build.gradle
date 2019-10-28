@@ -47,6 +47,7 @@ dependencies {
 
     api project(':networking')
 
+    // need this here to be able to use Dagger annotations
     api "com.google.dagger:dagger:$dagger_version"
 
     testImplementation "io.mockk:mockk:$mockk_version"
