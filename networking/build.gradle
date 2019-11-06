@@ -39,6 +39,7 @@ dependencies {
     api project(':model')
 
     api "com.squareup.retrofit2:retrofit:$retrofit_version"
+    api "com.squareup.retrofit2:adapter-rxjava2:$retrofit_rxkotlin_adapter_version"
 
     api "io.reactivex.rxjava2:rxandroid:$rxandroid_version"
     api "io.reactivex.rxjava2:rxkotlin:$rxkotlin_version"
