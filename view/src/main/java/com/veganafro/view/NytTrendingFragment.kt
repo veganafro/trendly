@@ -33,8 +33,8 @@ class NytTrendingFragment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        presenter.setView(this)
-        presenter.subscribe()
+        presenter.view = this
+        presenter.coSubscribe()
 
         viewAdapter = NytTrendingAdapter()
         viewManager = LinearLayoutManager(context)
@@ -45,7 +45,7 @@ class NytTrendingFragment
         val view: View = inflater.inflate(R.layout.nyt_trending_view, container, false)
 
         swipeRefreshContainer = view.nyt_trending_swipe_refresh_view
-        swipeRefreshContainer.setOnRefreshListener { presenter.subscribe() }
+        swipeRefreshContainer.setOnRefreshListener { presenter.coSubscribe() }
 
         shortAnimationTime = resources.getInteger(android.R.integer.config_longAnimTime)
 
@@ -61,15 +61,17 @@ class NytTrendingFragment
 
     override fun onStop() {
         super.onStop()
-        presenter.unsubscribe()
+        swipeRefreshContainer.isRefreshing = false
+        presenter.coUnsubscribe()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.onDestroy()
+        presenter.coOnDestroy()
     }
 
     override fun onFetchDataStarted() {
+        Log.v("NytTrendingFragment", "called onFetchDataStarted")
     }
 
     override fun onFetchDataCompleted() {
@@ -104,5 +106,6 @@ class NytTrendingFragment
 
     override fun onFetchDataError(throwable: Throwable) {
         Log.e("NytTrendingFragment", "Data fetching error: ${throwable.message}")
+        swipeRefreshContainer.isRefreshing = false
     }
 }

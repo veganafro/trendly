@@ -12,4 +12,8 @@ interface NytService {
     @Headers("Accept: application/json")
     @GET("svc/mostpopular/v2/shared/{period}.json")
     fun mostShared(@Path("period") period: Int?, @Query("api-key") key: String): Observable<NytTopic>
+
+    @Headers("Accept: application/json")
+    @GET("svc/mostpopular/v2/shared/{period}.json")
+    suspend fun coMostShared(@Path("period") period: Int?, @Query("api-key") key: String): NytTopic
 }
