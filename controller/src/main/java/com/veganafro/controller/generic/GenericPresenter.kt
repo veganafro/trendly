@@ -1,6 +1,10 @@
 package com.veganafro.controller.generic
 
-interface GenericPresenter {
+import kotlinx.coroutines.CoroutineScope
+
+interface GenericPresenter : CoroutineScope {
+
+    var view: GenericView?
 
     fun loadData()
 

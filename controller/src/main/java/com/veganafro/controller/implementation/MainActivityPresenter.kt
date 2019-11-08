@@ -8,18 +8,50 @@ import com.veganafro.networking.nyt.NytService
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
 import javax.inject.Inject
 import javax.inject.Named
 
 class MainActivityPresenter @Inject constructor() :
     GenericPresenter {
 
-    private var view: GenericView? = null
+    override var view: GenericView? = null
+        set(value) {
+            field?.let {} ?: run { field = value }
+        }
+
+    private val job: Job = Job()
+    override val coroutineContext: CoroutineContext = job
+        .plus(Dispatchers.IO)
+        .plus(CoroutineExceptionHandler { _: CoroutineContext, t: Throwable ->
+            view?.onFetchDataError(t)
+        })
+
     @field:[Inject Named("mainScheduler")] lateinit var mainScheduler: Scheduler
     @field:[Inject Named("backgroundScheduler")] lateinit var backgroundScheduler: Scheduler
 
     @Inject lateinit var nytMostShared: NytService
     @Inject lateinit var subscriptions: CompositeDisposable
+
+    suspend fun coLoadData() {
+        withContext(Dispatchers.Main) {
+            view?.onFetchDataStarted()
+        }
+
+        val nytTopic: NytTopic = nytMostShared
+            .coMostShared(1, BuildConfig.NYT_CONSUMER_KEY)
+
+        withContext(Dispatchers.Main) {
+            view?.onFetchDataSuccess(nytTopic.results)
+            view?.onFetchDataCompleted()
+        }
+    }
 
     override fun loadData() {
         view?.onFetchDataStarted()
@@ -48,19 +80,32 @@ class MainActivityPresenter @Inject constructor() :
         )
     }
 
+    fun coSubscribe() {
+        launch {
+            coLoadData()
+        }
+    }
+
     override fun subscribe() {
         loadData()
+    }
+
+    fun coUnsubscribe() {
+        // call `cancelChildren` to stop any in flight network requests
+        // calling `cancel` will prevent this instance's future calls to `launch` from executing
+        job.cancelChildren()
     }
 
     override fun unsubscribe() {
         subscriptions.clear()
     }
 
-    override fun onDestroy() {
-        this.view = null
+    fun coOnDestroy() {
+        view = null
+        job.cancel()
     }
 
-    fun setView(view: GenericView) {
-        this.view?.let {} ?: run { this.view = view }
+    override fun onDestroy() {
+        view = null
     }
 }

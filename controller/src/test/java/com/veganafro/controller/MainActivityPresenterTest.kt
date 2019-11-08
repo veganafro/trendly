@@ -9,13 +9,16 @@ import io.mockk.Runs
 import io.mockk.just
 import io.mockk.every
 import io.mockk.verify
+import io.mockk.coEvery
 import io.mockk.Ordering
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.SpyK
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import java.lang.Exception
 
@@ -49,7 +52,20 @@ class MainActivityPresenterTest {
         presenter.subscriptions = compositeDisposable
         presenter.mainScheduler = Schedulers.trampoline()
         presenter.backgroundScheduler = Schedulers.trampoline()
-        presenter.setView(genericView)
+        presenter.view = genericView
+    }
+
+    @Test
+    @Ignore("Currently researching coroutine testing")
+    fun `coroutine presenter subscribe should load data into view`() {
+        runBlocking {
+            val results: MutableList<NytTopic.Article> = listOf(
+                NytTopic.Article("testUrl", "testTitle", "testSection")
+            ).toMutableList()
+            val nytTopic = NytTopic(results = results)
+
+            coEvery { nytService.coMostShared(any(), any()) } coAnswers { nytTopic }
+        }
     }
 
     @Test
