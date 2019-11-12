@@ -26,7 +26,7 @@ class MainActivityPresenter @Inject constructor() :
             field?.let {} ?: run { field = value }
         }
 
-    private val job: Job = Job()
+    override val job: Job = Job()
     override val coroutineContext: CoroutineContext = job
         .plus(Dispatchers.IO)
         .plus(CoroutineExceptionHandler { _: CoroutineContext, t: Throwable ->
