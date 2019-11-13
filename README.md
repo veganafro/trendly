@@ -71,7 +71,7 @@ The `@Headers("Accept: application/json")` annotation does what it sounds like i
 headers to the request. The relative URL of the resource is specified in the
 `@GET("svc/mostpopular/v2/shared/{period}.json")` annotation. Finally, the `@Path("period")` annotation
 adds the following parameter to the relative URL, and the `@Query("api-key")` adds the annotated argument
-as a query parameter.
+as a query parameter. A note, a `Single` is more appropriate here than an `Observer`.
 
 ## Controller
 
