@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.snackbar.Snackbar
 import com.veganafro.controller.generic.GenericView
 import com.veganafro.controller.implementation.MainActivityPresenter
 import com.veganafro.injector.DaggerTrendlyComponent
@@ -71,7 +72,7 @@ class NytTrendingFragment
     }
 
     override fun onFetchDataStarted() {
-        Log.v("NytTrendingFragment", "called onFetchDataStarted")
+        Log.v("Trendly|NytTF", "called onFetchDataStarted")
     }
 
     override fun onFetchDataCompleted() {
@@ -105,7 +106,9 @@ class NytTrendingFragment
     }
 
     override fun onFetchDataError(throwable: Throwable) {
-        Log.e("NytTrendingFragment", "Data fetching error: ${throwable.message}")
+        Log.e("Trendly|NytTF", "Data fetching error: ${throwable.message}")
         swipeRefreshContainer.isRefreshing = false
+        Snackbar.make(view!!, "Sorry, couldn't refresh", Snackbar.LENGTH_SHORT)
+            .show()
     }
 }
