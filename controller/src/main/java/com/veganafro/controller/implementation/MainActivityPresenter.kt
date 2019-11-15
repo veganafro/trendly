@@ -1,20 +1,23 @@
 package com.veganafro.controller.implementation
 
-import com.veganafro.controller.BuildConfig
+import android.util.Log
 import com.veganafro.controller.generic.GenericPresenter
 import com.veganafro.controller.generic.GenericView
-import com.veganafro.model.NytTopic
 import com.veganafro.networking.nyt.NytService
+import com.veganafro.controller.BuildConfig
+import com.veganafro.model.NytTopic
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.Observable
 import io.reactivex.Scheduler
-import io.reactivex.disposables.CompositeDisposable
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -29,8 +32,12 @@ class MainActivityPresenter @Inject constructor() :
     override val job: Job = Job()
     override val coroutineContext: CoroutineContext = job
         .plus(Dispatchers.IO)
-        .plus(CoroutineExceptionHandler { _: CoroutineContext, t: Throwable ->
-            view?.onFetchDataError(t)
+        .plus(CoroutineExceptionHandler { coroutineContext: CoroutineContext, throwable: Throwable ->
+            Log.e(
+                "Trendly|NytMAP",
+                "Active status ${coroutineContext.isActive}",
+                throwable
+            )
         })
 
     @field:[Inject Named("mainScheduler")] lateinit var mainScheduler: Scheduler
@@ -44,12 +51,18 @@ class MainActivityPresenter @Inject constructor() :
             view?.onFetchDataStarted()
         }
 
-        val nytTopic: NytTopic = nytMostShared
-            .coMostShared(1, BuildConfig.NYT_CONSUMER_KEY)
+        try {
+            val nytTopic = nytMostShared
+                .coMostShared(1, BuildConfig.NYT_CONSUMER_KEY)
 
-        withContext(Dispatchers.Main) {
-            view?.onFetchDataSuccess(nytTopic.results)
-            view?.onFetchDataCompleted()
+            withContext(Dispatchers.Main) {
+                view?.onFetchDataSuccess(nytTopic.results)
+                view?.onFetchDataCompleted()
+            }
+        } catch (httpException: IOException) {
+            withContext(Dispatchers.Main) {
+                view?.onFetchDataError(httpException)
+            }
         }
     }
 
