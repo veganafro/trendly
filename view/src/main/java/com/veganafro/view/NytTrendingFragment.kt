@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.veganafro.controller.generic.GenericView
-import com.veganafro.controller.implementation.MainActivityPresenter
+import com.veganafro.controller.implementation.NytTrendingPresenter
 import com.veganafro.injector.DaggerTrendlyComponent
 import com.veganafro.model.NytTopic
 import kotlinx.android.synthetic.main.nyt_trending_view.view.nyt_trending_recycler_view
@@ -27,9 +27,9 @@ class NytTrendingFragment
 
     private lateinit var swipeRefreshContainer: SwipeRefreshLayout
 
-    private var presenter: MainActivityPresenter = DaggerTrendlyComponent
+    private var presenter: NytTrendingPresenter = DaggerTrendlyComponent
         .create()
-        .mainActivityPresenter()
+        .nytTrendingPresenter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

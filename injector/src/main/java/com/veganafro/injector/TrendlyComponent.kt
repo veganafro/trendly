@@ -1,7 +1,7 @@
 package com.veganafro.injector
 
 import androidx.appcompat.app.AppCompatActivity
-import com.veganafro.controller.implementation.MainActivityPresenter
+import com.veganafro.controller.implementation.NytTrendingPresenter
 import dagger.Component
 import javax.inject.Singleton
 
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 ])
 interface TrendlyComponent {
 
-    fun mainActivityPresenter(): MainActivityPresenter
+    fun nytTrendingPresenter(): NytTrendingPresenter
 
     fun inject(app: AppCompatActivity)
 }

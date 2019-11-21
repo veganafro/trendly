@@ -1,7 +1,7 @@
 package com.veganafro.controller
 
 import com.veganafro.controller.generic.GenericView
-import com.veganafro.controller.implementation.MainActivityPresenter
+import com.veganafro.controller.implementation.NytTrendingPresenter
 import com.veganafro.model.NytTopic
 import com.veganafro.networking.nyt.NytService
 import io.mockk.MockKAnnotations
@@ -22,7 +22,7 @@ import org.junit.Ignore
 import org.junit.Test
 import java.lang.Exception
 
-class MainActivityPresenterTest {
+class NytTrendingPresenterTest {
 
     @MockK
     lateinit var nytService: NytService
@@ -34,7 +34,7 @@ class MainActivityPresenterTest {
     lateinit var compositeDisposable: CompositeDisposable
 
     @SpyK(recordPrivateCalls = true)
-    var presenter = MainActivityPresenter()
+    var presenter = NytTrendingPresenter()
 
     @Before
     fun setUp() {
