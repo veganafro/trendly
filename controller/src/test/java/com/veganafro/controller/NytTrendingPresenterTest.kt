@@ -16,7 +16,7 @@ import io.mockk.impl.annotations.SpyK
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -58,13 +58,13 @@ class NytTrendingPresenterTest {
     @Test
     @Ignore("Currently researching coroutine testing")
     fun `coroutine presenter subscribe should load data into view`() {
-        runBlocking {
+        runBlockingTest {
             val results: MutableList<NytTopic.Article> = listOf(
                 NytTopic.Article("testUrl", "testTitle", "testSection")
             ).toMutableList()
             val nytTopic = NytTopic(results = results)
 
-            coEvery { nytService.coMostShared(any(), any()) } coAnswers { nytTopic }
+            coEvery { nytService.coMostShared(any(), any()) } returns nytTopic
         }
     }
 

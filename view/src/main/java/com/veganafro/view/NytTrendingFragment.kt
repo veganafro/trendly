@@ -22,31 +22,27 @@ class NytTrendingFragment
 
     private var shortAnimationTime: Int = 0
 
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var viewManager: RecyclerView.LayoutManager
+    private var viewAdapter: RecyclerView.Adapter<*>? = null
+    private var viewManager: RecyclerView.LayoutManager? = null
 
-    private lateinit var swipeRefreshContainer: SwipeRefreshLayout
+    private var swipeRefreshContainer: SwipeRefreshLayout? = null
 
     private var presenter: NytTrendingPresenter = DaggerTrendlyComponent
         .create()
         .nytTrendingPresenter()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
+            : View? {
+        val view: View = inflater.inflate(R.layout.nyt_trending_view, container, false)
 
         presenter.view = this
         presenter.coSubscribe()
 
         viewAdapter = NytTrendingAdapter()
         viewManager = LinearLayoutManager(context)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
-            : View? {
-        val view: View = inflater.inflate(R.layout.nyt_trending_view, container, false)
 
         swipeRefreshContainer = view.nyt_trending_swipe_refresh_view
-        swipeRefreshContainer.setOnRefreshListener { presenter.coSubscribe() }
+        swipeRefreshContainer?.setOnRefreshListener { presenter.coSubscribe() }
 
         shortAnimationTime = resources.getInteger(android.R.integer.config_longAnimTime)
 
@@ -56,14 +52,24 @@ class NytTrendingFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        savedInstanceState?.let {} ?: apply { view.nyt_trending_recycler_view.visibility = View.GONE }
-        swipeRefreshContainer.isRefreshing = true
+        // prevent the visibility from being set to GONE if we're being restored from an existing state
+        savedInstanceState?.let {} ?: apply {
+            view.nyt_trending_recycler_view.visibility = View.GONE
+        }
+        swipeRefreshContainer?.isRefreshing = true
     }
 
-    override fun onStop() {
-        super.onStop()
-        swipeRefreshContainer.isRefreshing = false
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        presenter.view = null
         presenter.coUnsubscribe()
+
+        viewAdapter = null
+        viewManager = null
+
+        swipeRefreshContainer?.isRefreshing = false
+        swipeRefreshContainer = null
     }
 
     override fun onDestroy() {
@@ -95,7 +101,7 @@ class NytTrendingFragment
                             .setListener(null)
                     }
 
-                    swipeRefreshContainer.isRefreshing = false
+                    swipeRefreshContainer?.isRefreshing = false
                 }
             }
     }
@@ -107,7 +113,7 @@ class NytTrendingFragment
 
     override fun onFetchDataError(throwable: Throwable) {
         Log.e("Trendly|NytTF", "Data fetching error: ${throwable.message}")
-        swipeRefreshContainer.isRefreshing = false
+        swipeRefreshContainer?.isRefreshing = false
         Snackbar.make(view!!, "Sorry, couldn't refresh", Snackbar.LENGTH_SHORT)
             .show()
     }
