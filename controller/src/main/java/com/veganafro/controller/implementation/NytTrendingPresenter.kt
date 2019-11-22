@@ -34,7 +34,7 @@ class NytTrendingPresenter @Inject constructor() :
         .plus(Dispatchers.IO)
         .plus(CoroutineExceptionHandler { coroutineContext: CoroutineContext, throwable: Throwable ->
             Log.e(
-                "Trendly|NytMAP",
+                "Trendly|NytTP",
                 "Active status ${coroutineContext.isActive}",
                 throwable
             )

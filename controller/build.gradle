@@ -52,6 +52,7 @@ dependencies {
     api "com.google.dagger:dagger:$dagger_version"
 
     testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlin_coroutines_test_version"
 
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_core_version"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_android_version"
