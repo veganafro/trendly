@@ -21,7 +21,7 @@ import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
 
-class MainActivityPresenter @Inject constructor() :
+class NytTrendingPresenter @Inject constructor() :
     GenericPresenter {
 
     override var view: GenericView? = null
