@@ -1,4 +1,4 @@
-package com.veganafro.view
+package com.veganafro.app
 
 import android.view.LayoutInflater
 import android.view.View
