@@ -1,4 +1,4 @@
-package com.veganafro.controller.generic
+package com.veganafro.contract
 
 interface GenericView {
 

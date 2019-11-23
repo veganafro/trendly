@@ -1,7 +1,6 @@
 package com.veganafro.controller
 
-import com.veganafro.controller.generic.GenericView
-import com.veganafro.controller.implementation.NytTrendingPresenter
+import com.veganafro.contract.GenericView
 import com.veganafro.model.NytTopic
 import com.veganafro.networking.nyt.NytService
 import io.mockk.MockKAnnotations

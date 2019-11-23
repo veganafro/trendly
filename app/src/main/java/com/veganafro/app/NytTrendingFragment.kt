@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
-import com.veganafro.controller.generic.GenericView
-import com.veganafro.controller.implementation.NytTrendingPresenter
+import com.veganafro.contract.GenericView
+import com.veganafro.controller.NytTrendingPresenter
 import com.veganafro.injector.DaggerTrendlyComponent
 import com.veganafro.model.NytTopic
 import kotlinx.android.synthetic.main.nyt_trending_view.view.nyt_trending_recycler_view
