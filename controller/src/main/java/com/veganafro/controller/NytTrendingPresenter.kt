@@ -20,7 +20,9 @@ import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
 
-class NytTrendingPresenter @Inject constructor() :
+class NytTrendingPresenter @Inject constructor(
+    private val nytMostShared: NytService
+) :
     GenericPresenter {
 
     override var view: GenericView? = null
@@ -39,11 +41,9 @@ class NytTrendingPresenter @Inject constructor() :
             )
         })
 
+    @Inject lateinit var subscriptions: CompositeDisposable
     @field:[Inject Named("mainScheduler")] lateinit var mainScheduler: Scheduler
     @field:[Inject Named("backgroundScheduler")] lateinit var backgroundScheduler: Scheduler
-
-    @Inject lateinit var nytMostShared: NytService
-    @Inject lateinit var subscriptions: CompositeDisposable
 
     suspend fun coLoadData() {
         withContext(Dispatchers.Main) {

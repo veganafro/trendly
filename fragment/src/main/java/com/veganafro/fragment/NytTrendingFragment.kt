@@ -1,5 +1,6 @@
-package com.veganafro.app
+package com.veganafro.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,13 +13,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.veganafro.contract.GenericView
 import com.veganafro.controller.NytTrendingPresenter
-import com.veganafro.injector.DaggerTrendlyComponent
 import com.veganafro.model.NytTopic
 import kotlinx.android.synthetic.main.nyt_trending_view.view.nyt_trending_recycler_view
 import kotlinx.android.synthetic.main.nyt_trending_view.view.nyt_trending_swipe_refresh_view
+import javax.inject.Inject
 
-class NytTrendingFragment
-    : Fragment(R.layout.nyt_trending_view), GenericView {
+class NytTrendingFragment @Inject constructor(
+    private val presenter: NytTrendingPresenter
+) : Fragment(R.layout.nyt_trending_view), GenericView {
 
     private var shortAnimationTime: Int = 0
 
@@ -26,10 +28,6 @@ class NytTrendingFragment
     private var viewManager: RecyclerView.LayoutManager? = null
 
     private var swipeRefreshContainer: SwipeRefreshLayout? = null
-
-    private var presenter: NytTrendingPresenter = DaggerTrendlyComponent
-        .create()
-        .nytTrendingPresenter()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
             : View? {
@@ -81,6 +79,7 @@ class NytTrendingFragment
         Log.v("Trendly|NytTF", "called onFetchDataStarted")
     }
 
+    @SuppressLint("NewApi")
     override fun onFetchDataCompleted() {
         view?.nyt_trending_recycler_view
             .apply {

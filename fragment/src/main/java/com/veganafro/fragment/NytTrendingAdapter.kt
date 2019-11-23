@@ -1,4 +1,4 @@
-package com.veganafro.app
+package com.veganafro.fragment
 
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +11,9 @@ import kotlinx.android.synthetic.main.nyt_trending_card.view.nyt_title_text
 import kotlinx.android.synthetic.main.nyt_trending_card.view.nyt_section_text
 
 class NytTrendingAdapter
-    : ListAdapter<NytTopic.Article, NytTrendingAdapter.NytArticleViewHolder>(NytArticleDiffCallback()) {
+    : ListAdapter<NytTopic.Article, NytTrendingAdapter.NytArticleViewHolder>(
+        NytArticleDiffCallback()
+    ) {
 
     override fun getItemCount(): Int {
         return currentList.size
@@ -21,7 +23,9 @@ class NytTrendingAdapter
         val view: View = LayoutInflater
             .from(parent.context)
             .inflate(R.layout.nyt_trending_card, parent, false)
-        return NytArticleViewHolder(view)
+        return NytArticleViewHolder(
+            view
+        )
     }
 
     @Suppress("ReplaceGetOrSet")

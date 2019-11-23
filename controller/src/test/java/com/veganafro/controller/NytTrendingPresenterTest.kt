@@ -6,12 +6,12 @@ import com.veganafro.networking.nyt.NytService
 import io.mockk.MockKAnnotations
 import io.mockk.Runs
 import io.mockk.just
+import io.mockk.spyk
 import io.mockk.every
 import io.mockk.verify
 import io.mockk.coEvery
 import io.mockk.Ordering
 import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.SpyK
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -32,12 +32,16 @@ class NytTrendingPresenterTest {
     @MockK
     lateinit var compositeDisposable: CompositeDisposable
 
-    @SpyK(recordPrivateCalls = true)
-    var presenter = NytTrendingPresenter()
+    lateinit var presenter: NytTrendingPresenter
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this, relaxUnitFun = true)
+
+        presenter = spyk(
+            NytTrendingPresenter(nytService),
+            recordPrivateCalls = true
+        )
 
         every { genericView.onFetchDataStarted() } just Runs
         every { genericView.onFetchDataCompleted() } just Runs
@@ -47,7 +51,6 @@ class NytTrendingPresenterTest {
         every { compositeDisposable.clear() } just Runs
         every { compositeDisposable.add(any()) } returns true
 
-        presenter.nytMostShared = nytService
         presenter.subscriptions = compositeDisposable
         presenter.mainScheduler = Schedulers.trampoline()
         presenter.backgroundScheduler = Schedulers.trampoline()
