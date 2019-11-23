@@ -83,13 +83,13 @@ jobs:
             - store_test_results:
                 path: networking/build/test-results
 
-            # run view tests
+            # run app tests
             - run:
-                name: Run view unit tests
-                command: ./gradlew :view:test
+                name: Run app unit tests
+                command: ./gradlew :app:test
 
             - store_artifacts:
-                path: view/build/reports
+                path: app/build/reports
 
             - store_test_results:
-                path: view/build/test-results
+                path: app/build/test-results
