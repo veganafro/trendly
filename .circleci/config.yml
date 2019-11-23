@@ -39,6 +39,17 @@ jobs:
                     - ~/.gradle
                 key: v1-dependencies-{{ checksum "build.gradle" }}
 
+            # run contract tests
+            - run:
+                name: Run contract unit tests
+                command: ./gradlew :contract:test
+
+            - store_artifacts:
+                path: contract/build/reports
+
+            - store_test_results:
+                path: contract/build/test-results
+
             # run presenter tests
             - run:
                 name: Run presenter unit tests

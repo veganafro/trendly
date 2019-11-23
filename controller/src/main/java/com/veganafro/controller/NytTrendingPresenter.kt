@@ -1,10 +1,9 @@
-package com.veganafro.controller.implementation
+package com.veganafro.controller
 
 import android.util.Log
-import com.veganafro.controller.generic.GenericPresenter
-import com.veganafro.controller.generic.GenericView
+import com.veganafro.contract.GenericPresenter
+import com.veganafro.contract.GenericView
 import com.veganafro.networking.nyt.NytService
-import com.veganafro.controller.BuildConfig
 import com.veganafro.model.NytTopic
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.Observable
