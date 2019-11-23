@@ -1,1 +1,1 @@
-include ':app', ':controller', ':model', ':networking', ':injector', ':contract'
+include ':app', ':controller', ':model', ':networking', ':injector', ':contract', ':fragment'
