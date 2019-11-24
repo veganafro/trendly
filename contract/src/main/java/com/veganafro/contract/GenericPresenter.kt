@@ -5,7 +5,7 @@ import kotlinx.coroutines.Job
 
 interface GenericPresenter : CoroutineScope {
 
-    var view: GenericView?
+    var fragment: GenericFragment?
 
     val job: Job
 

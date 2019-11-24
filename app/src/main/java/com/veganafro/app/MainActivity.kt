@@ -3,18 +3,21 @@ package com.veganafro.app
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import com.veganafro.contract.GenericActivity
+import com.veganafro.fragment.NytArticleDetailsFragment
 import com.veganafro.fragment.NytTrendingFragment
 import com.veganafro.injector.DaggerTrendlyComponent
 import com.veganafro.injector.TrendlyComponent
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_main.fragment_container
 
-class MainActivity : AppCompatActivity() {
+class MainActivity
+    : AppCompatActivity(), GenericActivity {
+
+    private val dagger: TrendlyComponent = DaggerTrendlyComponent.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val dagger: TrendlyComponent = DaggerTrendlyComponent.create()
 
         // insert the fragment factory
         supportFragmentManager.fragmentFactory = dagger.fragmentFactory()
@@ -35,13 +38,33 @@ class MainActivity : AppCompatActivity() {
                 return
             }
 
-            val recyclerFragment = supportFragmentManager.fragmentFactory.instantiate(
-                classLoader, NytTrendingFragment::class.java.canonicalName!!
-            )
+            val recyclerFragment = supportFragmentManager
+                .fragmentFactory
+                .instantiate(
+                    classLoader,
+                    NytTrendingFragment::class.java.canonicalName!!
+                )
             recyclerFragment.arguments = intent.extras
             supportFragmentManager
                 .beginTransaction()
                 .add(it.id, recyclerFragment)
+                .commit()
+        }
+    }
+
+    override fun goNytArticleDetails(title: String) {
+        fragment_container?.let {
+            val detailsFragment = supportFragmentManager
+                .fragmentFactory
+                .instantiate(
+                    classLoader,
+                    NytArticleDetailsFragment::class.java.canonicalName!!
+                )
+            detailsFragment.arguments = intent.extras
+            supportFragmentManager
+                .beginTransaction()
+                .addToBackStack(detailsFragment.tag)
+                .replace(it.id, detailsFragment)
                 .commit()
         }
     }

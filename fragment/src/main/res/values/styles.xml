@@ -1,0 +1,31 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimaryVariant">@color/colorPrimaryAlternate</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MyToolbarTextStyle">
+        <item name="android:titleTextColor" tools:targetApi="m">@color/colorPrimary</item>
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textSize">19dp</item>
+    </style>
+
+    <style name="MyTitleTextStyle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textStyle">bold|italic</item>
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textSize">15dp</item>
+    </style>
+
+    <style name="MySubtitleTextStyle" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textColor">@color/colorSubtitle</item>
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textSize">11dp</item>
+    </style>
+
+</resources>

@@ -10,8 +10,9 @@ import com.veganafro.model.NytTopic
 import kotlinx.android.synthetic.main.nyt_trending_card.view.nyt_title_text
 import kotlinx.android.synthetic.main.nyt_trending_card.view.nyt_section_text
 
-class NytTrendingAdapter
-    : ListAdapter<NytTopic.Article, NytTrendingAdapter.NytArticleViewHolder>(
+class NytTrendingAdapter constructor(
+    private val onArticleClickedCallback: (article: NytTopic.Article) -> Unit
+) : ListAdapter<NytTopic.Article, NytTrendingAdapter.NytArticleViewHolder>(
         NytArticleDiffCallback()
     ) {
 
@@ -24,7 +25,8 @@ class NytTrendingAdapter
             .from(parent.context)
             .inflate(R.layout.nyt_trending_card, parent, false)
         return NytArticleViewHolder(
-            view
+            view,
+            onArticleClickedCallback
         )
     }
 
@@ -33,11 +35,18 @@ class NytTrendingAdapter
         holder.bind(getItem(position))
     }
 
-    class NytArticleViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    class NytArticleViewHolder(
+        private val view: View,
+        private val onArticleClickedCallback: (article: NytTopic.Article) -> Unit
+    ) : RecyclerView.ViewHolder(view) {
 
         fun bind(article: NytTopic.Article) {
             view.nyt_title_text.text = article.title
             view.nyt_section_text.text = article.section
+
+            view.setOnClickListener {
+                onArticleClickedCallback.invoke(article)
+            }
         }
     }
 
