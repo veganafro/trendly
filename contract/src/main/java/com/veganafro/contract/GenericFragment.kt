@@ -1,6 +1,6 @@
 package com.veganafro.contract
 
-interface GenericView {
+interface GenericFragment {
 
     fun onFetchDataStarted()
 

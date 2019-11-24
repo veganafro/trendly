@@ -1,11 +1,9 @@
 package com.veganafro.controller
 
-import com.veganafro.contract.GenericView
+import com.veganafro.contract.GenericFragment
 import com.veganafro.model.NytTopic
 import com.veganafro.networking.nyt.NytService
 import io.mockk.MockKAnnotations
-import io.mockk.Runs
-import io.mockk.just
 import io.mockk.spyk
 import io.mockk.every
 import io.mockk.verify
@@ -26,10 +24,10 @@ class NytTrendingPresenterTest {
     @MockK
     lateinit var nytService: NytService
 
-    @MockK
-    lateinit var genericView: GenericView
+    @MockK(relaxed = true)
+    lateinit var genericFragment: GenericFragment
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var compositeDisposable: CompositeDisposable
 
     lateinit var presenter: NytTrendingPresenter
@@ -43,18 +41,10 @@ class NytTrendingPresenterTest {
             recordPrivateCalls = true
         )
 
-        every { genericView.onFetchDataStarted() } just Runs
-        every { genericView.onFetchDataCompleted() } just Runs
-        every { genericView.onFetchDataError(any()) } just Runs
-        every { genericView.onFetchDataSuccess(any()) } just Runs
-
-        every { compositeDisposable.clear() } just Runs
-        every { compositeDisposable.add(any()) } returns true
-
         presenter.subscriptions = compositeDisposable
         presenter.mainScheduler = Schedulers.trampoline()
         presenter.backgroundScheduler = Schedulers.trampoline()
-        presenter.view = genericView
+        presenter.fragment = genericFragment
     }
 
     @Test
@@ -82,9 +72,9 @@ class NytTrendingPresenterTest {
         presenter.subscribe()
 
         verify(ordering = Ordering.SEQUENCE) {
-            genericView.onFetchDataStarted()
-            genericView.onFetchDataSuccess(nytTopic.results)
-            genericView.onFetchDataCompleted()
+            genericFragment.onFetchDataStarted()
+            genericFragment.onFetchDataSuccess(nytTopic.results)
+            genericFragment.onFetchDataCompleted()
         }
     }
 
@@ -97,12 +87,12 @@ class NytTrendingPresenterTest {
         presenter.subscribe()
 
         verify(ordering = Ordering.SEQUENCE) {
-            genericView.onFetchDataStarted()
-            genericView.onFetchDataError(result)
+            genericFragment.onFetchDataStarted()
+            genericFragment.onFetchDataError(result)
         }
 
         verify(exactly = 0) {
-            genericView.onFetchDataCompleted()
+            genericFragment.onFetchDataCompleted()
         }
     }
 }

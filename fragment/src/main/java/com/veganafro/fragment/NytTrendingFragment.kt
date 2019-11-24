@@ -7,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
-import com.veganafro.contract.GenericView
+import com.veganafro.contract.GenericActivity
+import com.veganafro.contract.GenericFragment
 import com.veganafro.controller.NytTrendingPresenter
 import com.veganafro.model.NytTopic
 import kotlinx.android.synthetic.main.nyt_trending_view.view.nyt_trending_recycler_view
@@ -20,7 +22,7 @@ import javax.inject.Inject
 
 class NytTrendingFragment @Inject constructor(
     private val presenter: NytTrendingPresenter
-) : Fragment(R.layout.nyt_trending_view), GenericView {
+) : Fragment(R.layout.nyt_trending_view), GenericFragment {
 
     private var shortAnimationTime: Int = 0
 
@@ -33,16 +35,16 @@ class NytTrendingFragment @Inject constructor(
             : View? {
         val view: View = inflater.inflate(R.layout.nyt_trending_view, container, false)
 
-        presenter.view = this
+        presenter.fragment = this
         presenter.coSubscribe()
 
-        viewAdapter = NytTrendingAdapter()
+        viewAdapter = NytTrendingAdapter(this::onArticleClickedCallback)
         viewManager = LinearLayoutManager(context)
 
         swipeRefreshContainer = view.nyt_trending_swipe_refresh_view
         swipeRefreshContainer?.setOnRefreshListener { presenter.coSubscribe() }
 
-        shortAnimationTime = resources.getInteger(android.R.integer.config_longAnimTime)
+        shortAnimationTime = resources.getInteger(android.R.integer.config_shortAnimTime)
 
         return view
     }
@@ -60,7 +62,7 @@ class NytTrendingFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
 
-        presenter.view = null
+        presenter.fragment = null
         presenter.coUnsubscribe()
 
         viewAdapter = null
@@ -115,5 +117,11 @@ class NytTrendingFragment @Inject constructor(
         swipeRefreshContainer?.isRefreshing = false
         Snackbar.make(view!!, "Sorry, couldn't refresh", Snackbar.LENGTH_SHORT)
             .show()
+    }
+
+    private fun onArticleClickedCallback(article: NytTopic.Article) {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            (requireActivity() as GenericActivity).goNytArticleDetails(article.title)
+        }
     }
 }

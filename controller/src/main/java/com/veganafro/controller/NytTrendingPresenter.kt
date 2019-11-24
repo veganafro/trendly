@@ -2,7 +2,7 @@ package com.veganafro.controller
 
 import android.util.Log
 import com.veganafro.contract.GenericPresenter
-import com.veganafro.contract.GenericView
+import com.veganafro.contract.GenericFragment
 import com.veganafro.networking.nyt.NytService
 import com.veganafro.model.NytTopic
 import io.reactivex.disposables.CompositeDisposable
@@ -22,10 +22,9 @@ import javax.inject.Named
 
 class NytTrendingPresenter @Inject constructor(
     private val nytMostShared: NytService
-) :
-    GenericPresenter {
+) : GenericPresenter {
 
-    override var view: GenericView? = null
+    override var fragment: GenericFragment? = null
         set(value) {
             field?.let {} ?: run { field = value }
         }
@@ -47,7 +46,7 @@ class NytTrendingPresenter @Inject constructor(
 
     suspend fun coLoadData() {
         withContext(Dispatchers.Main) {
-            view?.onFetchDataStarted()
+            fragment?.onFetchDataStarted()
         }
 
         try {
@@ -55,18 +54,18 @@ class NytTrendingPresenter @Inject constructor(
                 .coMostShared(1, BuildConfig.NYT_CONSUMER_KEY)
 
             withContext(Dispatchers.Main) {
-                view?.onFetchDataSuccess(nytTopic.results)
-                view?.onFetchDataCompleted()
+                fragment?.onFetchDataSuccess(nytTopic.results)
+                fragment?.onFetchDataCompleted()
             }
         } catch (httpException: IOException) {
             withContext(Dispatchers.Main) {
-                view?.onFetchDataError(httpException)
+                fragment?.onFetchDataError(httpException)
             }
         }
     }
 
     override fun loadData() {
-        view?.onFetchDataStarted()
+        fragment?.onFetchDataStarted()
         subscriptions.clear()
 
         // create a cold observable that should be used to make the network request
@@ -80,13 +79,13 @@ class NytTrendingPresenter @Inject constructor(
         subscriptions.add(
             subscription.subscribe(
                 { nytTopic: NytTopic? ->
-                    view?.onFetchDataSuccess(nytTopic?.results)
+                    fragment?.onFetchDataSuccess(nytTopic?.results)
                 },
                 { error: Throwable? ->
-                    view?.onFetchDataError(error!!)
+                    fragment?.onFetchDataError(error!!)
                 },
                 {
-                    view?.onFetchDataCompleted()
+                    fragment?.onFetchDataCompleted()
                 }
             )
         )
@@ -113,11 +112,11 @@ class NytTrendingPresenter @Inject constructor(
     }
 
     fun coOnDestroy() {
-        view = null
+        fragment = null
         job.cancel()
     }
 
     override fun onDestroy() {
-        view = null
+        fragment = null
     }
 }
