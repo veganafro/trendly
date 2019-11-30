@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
+import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
@@ -57,7 +58,11 @@ class NytTrendingPresenter @Inject constructor(
                 fragment?.onFetchDataSuccess(nytTopic.results)
                 fragment?.onFetchDataCompleted()
             }
-        } catch (httpException: IOException) {
+        } catch (ioException: IOException) {
+            withContext(Dispatchers.Main) {
+                fragment?.onFetchDataError(ioException)
+            }
+        } catch (httpException: HttpException) {
             withContext(Dispatchers.Main) {
                 fragment?.onFetchDataError(httpException)
             }

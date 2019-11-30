@@ -54,9 +54,24 @@ class NytTrendingFragment @Inject constructor(
 
         // prevent the visibility from being set to GONE if we're being restored from an existing state
         savedInstanceState?.let {} ?: apply {
-            view.nyt_trending_recycler_view.visibility = View.GONE
+            view.nyt_trending_recycler_view
+                .apply {
+                    // this optimization tells the recycler view that all the views it's displaying
+                    // are the same size, so it can avoid inflating the whole view layout when its contents
+                    // change
+                    setHasFixedSize(true)
+
+                    visibility = View.GONE
+
+                    adapter?.apply {} ?: run {
+                        adapter = viewAdapter
+                    }
+                    layoutManager?.apply {} ?: run {
+                        layoutManager = viewManager
+                    }
+                }
+            swipeRefreshContainer?.isRefreshing = true
         }
-        swipeRefreshContainer?.isRefreshing = true
     }
 
     override fun onDestroyView() {
@@ -86,13 +101,6 @@ class NytTrendingFragment @Inject constructor(
         view?.nyt_trending_recycler_view
             .apply {
                 this?.apply {
-                    // this optimization tells the recycler view that all the views it's displaying
-                    // are the same size, so it can avoid inflating the whole view layout when its contents
-                    // change
-                    setHasFixedSize(true)
-                    adapter?.apply {} ?: run { this.adapter = viewAdapter }
-                    layoutManager?.apply {} ?: run { this.layoutManager = viewManager }
-
                     if (visibility.equals(View.GONE)) {
                         alpha = 0f
                         visibility = View.VISIBLE
