@@ -1,6 +1,5 @@
 package com.veganafro.controller
 
-import android.util.Log
 import com.veganafro.contract.GenericPresenter
 import com.veganafro.contract.GenericFragment
 import com.veganafro.networking.nyt.NytService
@@ -11,13 +10,11 @@ import io.reactivex.Scheduler
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
-import retrofit2.HttpException
-import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -26,19 +23,14 @@ class NytTrendingPresenter @Inject constructor(
 ) : GenericPresenter {
 
     override var fragment: GenericFragment? = null
-        set(value) {
-            field?.let {} ?: run { field = value }
-        }
 
-    override val job: Job = Job()
+    override val job: Job = SupervisorJob()
     override val coroutineContext: CoroutineContext = job
         .plus(Dispatchers.IO)
-        .plus(CoroutineExceptionHandler { coroutineContext: CoroutineContext, throwable: Throwable ->
-            Log.e(
-                "Trendly|NytTP",
-                "Active status ${coroutineContext.isActive}",
-                throwable
-            )
+        .plus(CoroutineExceptionHandler { _: CoroutineContext, throwable: Throwable ->
+            launch(Dispatchers.Main) {
+                fragment?.onFetchDataError(throwable)
+            }
         })
 
     @Inject lateinit var subscriptions: CompositeDisposable
@@ -50,22 +42,12 @@ class NytTrendingPresenter @Inject constructor(
             fragment?.onFetchDataStarted()
         }
 
-        try {
-            val nytTopic = nytMostShared
-                .coMostShared(1, BuildConfig.NYT_CONSUMER_KEY)
+        val nytTopic = nytMostShared
+            .coMostShared(1, BuildConfig.NYT_CONSUMER_KEY)
 
-            withContext(Dispatchers.Main) {
-                fragment?.onFetchDataSuccess(nytTopic.results)
-                fragment?.onFetchDataCompleted()
-            }
-        } catch (ioException: IOException) {
-            withContext(Dispatchers.Main) {
-                fragment?.onFetchDataError(ioException)
-            }
-        } catch (httpException: HttpException) {
-            withContext(Dispatchers.Main) {
-                fragment?.onFetchDataError(httpException)
-            }
+        withContext(Dispatchers.Main) {
+            fragment?.onFetchDataSuccess(nytTopic.results)
+            fragment?.onFetchDataCompleted()
         }
     }
 
