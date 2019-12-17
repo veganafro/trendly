@@ -14,7 +14,7 @@ class NytTrendingAdapter constructor(
     private val onArticleClickedCallback: (article: NytTopic.Article) -> Unit
 ) : ListAdapter<NytTopic.Article, NytTrendingAdapter.NytArticleViewHolder>(
         NytArticleDiffCallback()
-    ) {
+) {
 
     override fun getItemCount(): Int {
         return currentList.size
