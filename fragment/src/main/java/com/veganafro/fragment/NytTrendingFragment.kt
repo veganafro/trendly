@@ -6,10 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.veganafro.contract.GenericActivity
@@ -31,11 +31,16 @@ class NytTrendingFragment @Inject constructor(
 
     private var swipeRefreshContainer: SwipeRefreshLayout? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)
-            : View? {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        presenter.fragment = this
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         val view: View = inflater.inflate(R.layout.nyt_trending_view, container, false)
 
-        presenter.fragment = this
         presenter.coSubscribe()
 
         viewAdapter = NytTrendingAdapter(this::onArticleClickedCallback)
@@ -63,10 +68,10 @@ class NytTrendingFragment @Inject constructor(
 
                     visibility = View.GONE
 
-                    adapter?.apply {} ?: run {
+                    adapter?.let {} ?: apply {
                         adapter = viewAdapter
                     }
-                    layoutManager?.apply {} ?: run {
+                    layoutManager?.let {} ?: apply {
                         layoutManager = viewManager
                     }
                 }
@@ -77,7 +82,6 @@ class NytTrendingFragment @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
 
-        presenter.fragment = null
         presenter.coUnsubscribe()
 
         viewAdapter = null
@@ -89,6 +93,7 @@ class NytTrendingFragment @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
+
         presenter.coOnDestroy()
     }
 
