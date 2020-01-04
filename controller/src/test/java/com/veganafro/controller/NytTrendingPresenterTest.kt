@@ -52,7 +52,17 @@ class NytTrendingPresenterTest {
     fun `coroutine presenter subscribe should load data into view`() {
         runBlockingTest {
             val results: MutableList<NytTopic.Article> = listOf(
-                NytTopic.Article("testUrl", "testTitle", "testSection")
+                NytTopic.Article(
+                    "testUrl",
+                    "testTitle",
+                    "testSection",
+                    "testByline",
+                    mutableListOf(NytTopic.Article.Photos(
+                        mutableListOf(
+                            NytTopic.Article.Photos.Photo("testUrl")
+                        )
+                    ))
+                )
             ).toMutableList()
             val nytTopic = NytTopic(results = results)
 
@@ -63,7 +73,17 @@ class NytTrendingPresenterTest {
     @Test
     fun `presenter subscribe should load data into view`() {
         val results: MutableList<NytTopic.Article> = listOf(
-            NytTopic.Article("testUrl", "testTitle", "testSection")
+            NytTopic.Article(
+                "testUrl",
+                "testTitle",
+                "testSection",
+                "testByline",
+                mutableListOf(NytTopic.Article.Photos(
+                    mutableListOf(
+                        NytTopic.Article.Photos.Photo("testUrl")
+                    )
+                ))
+            )
         ).toMutableList()
         val nytTopic = NytTopic(results = results)
 
