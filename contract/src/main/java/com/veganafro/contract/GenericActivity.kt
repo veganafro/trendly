@@ -1,6 +1,8 @@
 package com.veganafro.contract
 
+import com.veganafro.model.NytTopic
+
 interface GenericActivity {
 
-    fun goNytArticleDetails(title: String)
+    fun goToNytArticleDetails(article: NytTopic.Article)
 }

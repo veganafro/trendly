@@ -39,6 +39,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    api project(':model')
     api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coroutines_core_version"
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_android_version"
 }
