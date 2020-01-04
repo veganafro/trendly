@@ -43,7 +43,7 @@ class NytTrendingFragment @Inject constructor(
 
         presenter.coSubscribe()
 
-        viewAdapter = NytTrendingAdapter(this::onArticleClickedCallback)
+        viewAdapter = NytTrendingAdapter(::onArticleClickedCallback)
         viewManager = LinearLayoutManager(context)
 
         swipeRefreshContainer = view.nyt_trending_swipe_refresh_view
@@ -134,7 +134,7 @@ class NytTrendingFragment @Inject constructor(
 
     private fun onArticleClickedCallback(article: NytTopic.Article) {
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            (requireActivity() as GenericActivity).goNytArticleDetails(article.title)
+            (requireActivity() as GenericActivity).goToNytArticleDetails(article)
         }
     }
 }

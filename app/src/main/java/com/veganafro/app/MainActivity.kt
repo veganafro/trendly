@@ -8,6 +8,7 @@ import com.veganafro.fragment.NytArticleDetailsFragment
 import com.veganafro.fragment.NytTrendingFragment
 import com.veganafro.injector.DaggerTrendlyComponent
 import com.veganafro.injector.TrendlyComponent
+import com.veganafro.model.NytTopic
 import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_main.fragment_container
 
@@ -52,7 +53,7 @@ class MainActivity
         }
     }
 
-    override fun goNytArticleDetails(title: String) {
+    override fun goToNytArticleDetails(article: NytTopic.Article) {
         fragment_container?.let {
             val detailsFragment = supportFragmentManager
                 .fragmentFactory
