@@ -1,28 +1,27 @@
 package com.veganafro.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.snackbar.Snackbar
 import com.veganafro.contract.GenericActivity
-import com.veganafro.contract.GenericFragment
-import com.veganafro.controller.NytTrendingPresenter
+import com.veganafro.controller.NytTrendingViewModel
 import com.veganafro.model.NytTopic
 import kotlinx.android.synthetic.main.nyt_trending_view.view.nyt_trending_recycler_view
 import kotlinx.android.synthetic.main.nyt_trending_view.view.nyt_trending_swipe_refresh_view
 import javax.inject.Inject
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 
 class NytTrendingFragment @Inject constructor(
-    private val presenter: NytTrendingPresenter
-) : Fragment(R.layout.nyt_trending_view), GenericFragment {
+    private val viewModelFactory: ViewModelProvider.Factory
+) : Fragment(R.layout.nyt_trending_view) {
 
     private var shortAnimationTime: Int = 0
 
@@ -31,9 +30,28 @@ class NytTrendingFragment @Inject constructor(
 
     private var swipeRefreshContainer: SwipeRefreshLayout? = null
 
+    private val viewModel: NytTrendingViewModel by viewModels { viewModelFactory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter.fragment = this
+
+        viewModel.getMostShared().observe(this, Observer {
+            (viewAdapter as NytTrendingAdapter).submitList(it)
+
+            view?.nyt_trending_recycler_view
+                .apply {
+                    if (this?.visibility!!.equals(View.GONE)) {
+                        alpha = 0f
+                        visibility = View.VISIBLE
+                        animate()
+                            .alpha(1f)
+                            .setDuration(shortAnimationTime.toLong())
+                            .setListener(null)
+                    }
+
+                    swipeRefreshContainer?.isRefreshing = false
+                }
+        })
     }
 
     override fun onCreateView(
@@ -41,13 +59,11 @@ class NytTrendingFragment @Inject constructor(
     ): View? {
         val view: View = inflater.inflate(R.layout.nyt_trending_view, container, false)
 
-        presenter.coSubscribe()
-
         viewAdapter = NytTrendingAdapter(::onArticleClickedCallback)
         viewManager = LinearLayoutManager(context)
 
         swipeRefreshContainer = view.nyt_trending_swipe_refresh_view
-        swipeRefreshContainer?.setOnRefreshListener { presenter.coSubscribe() }
+        swipeRefreshContainer?.setOnRefreshListener { viewModel.refreshMostShared() }
 
         shortAnimationTime = resources.getInteger(android.R.integer.config_shortAnimTime)
 
@@ -75,14 +91,13 @@ class NytTrendingFragment @Inject constructor(
                         layoutManager = viewManager
                     }
                 }
+            viewModel.fetchMostShared()
             swipeRefreshContainer?.isRefreshing = true
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-
-        presenter.coUnsubscribe()
 
         viewAdapter = null
         viewManager = null
@@ -93,43 +108,7 @@ class NytTrendingFragment @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-
-        presenter.coOnDestroy()
-    }
-
-    override fun onFetchDataStarted() {
-        Log.v("Trendly|NytTF", "called onFetchDataStarted")
-    }
-
-    @SuppressLint("NewApi")
-    override fun onFetchDataCompleted() {
-        view?.nyt_trending_recycler_view
-            .apply {
-                this?.apply {
-                    if (visibility.equals(View.GONE)) {
-                        alpha = 0f
-                        visibility = View.VISIBLE
-                        animate()
-                            .alpha(1f)
-                            .setDuration(shortAnimationTime.toLong())
-                            .setListener(null)
-                    }
-
-                    swipeRefreshContainer?.isRefreshing = false
-                }
-            }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    override fun onFetchDataSuccess(arg: Any?) {
-        (viewAdapter as NytTrendingAdapter).submitList(arg as MutableList<NytTopic.Article>)
-    }
-
-    override fun onFetchDataError(throwable: Throwable) {
-        Log.e("Trendly|NytTF", "Data fetching error: ${throwable.message}")
-        swipeRefreshContainer?.isRefreshing = false
-        Snackbar.make(view!!, "Sorry, couldn't refresh", Snackbar.LENGTH_SHORT)
-            .show()
+        viewModel.getMostShared().removeObservers(this)
     }
 
     private fun onArticleClickedCallback(article: NytTopic.Article) {
