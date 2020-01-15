@@ -3,6 +3,7 @@ package com.veganafro.fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -36,15 +37,21 @@ class NytTrendingAdapter constructor(
     }
 
     class NytArticleViewHolder(
-        private val view: View,
+        view: View,
         private val onArticleClickedCallback: (article: NytTopic.Article) -> Unit
     ) : RecyclerView.ViewHolder(view) {
 
-        fun bind(article: NytTopic.Article) {
-            view.nyt_title_text.text = article.title
-            view.nyt_section_text.text = article.section
+        private val titleView: TextView = view.nyt_title_text
+        private val sectionView: TextView = view.nyt_section_text
 
-            view.setOnClickListener {
+        fun bind(article: NytTopic.Article) {
+            titleView.text = article.title
+            sectionView.text = article.section
+
+            titleView.setOnClickListener {
+                onArticleClickedCallback.invoke(article)
+            }
+            sectionView.setOnClickListener {
                 onArticleClickedCallback.invoke(article)
             }
         }
