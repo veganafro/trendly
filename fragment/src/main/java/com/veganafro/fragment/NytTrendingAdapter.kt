@@ -3,11 +3,14 @@ package com.veganafro.fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.api.load
 import com.veganafro.model.NytTopic
+import kotlinx.android.synthetic.main.nyt_trending_card.view.nyt_thumbnail
 import kotlinx.android.synthetic.main.nyt_trending_card.view.nyt_title_text
 import kotlinx.android.synthetic.main.nyt_trending_card.view.nyt_section_text
 
@@ -31,11 +34,11 @@ class NytTrendingAdapter constructor(
         )
     }
 
-    @Suppress("ReplaceGetOrSet")
     override fun onBindViewHolder(holder: NytArticleViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
+    @Suppress("ReplaceGetOrSet")
     class NytArticleViewHolder(
         view: View,
         private val onArticleClickedCallback: (article: NytTopic.Article) -> Unit
@@ -43,15 +46,19 @@ class NytTrendingAdapter constructor(
 
         private val titleView: TextView = view.nyt_title_text
         private val sectionView: TextView = view.nyt_section_text
+        private val thumbnailView: ImageView = view.nyt_thumbnail
 
         fun bind(article: NytTopic.Article) {
             titleView.text = article.title
             sectionView.text = article.section
-
-            titleView.setOnClickListener {
-                onArticleClickedCallback.invoke(article)
+            thumbnailView.load(article.media.get(0).photos.get(
+                article.media.get(0).photos.lastIndex
+            ).url) {
+                crossfade(true)
+                placeholder(R.drawable.nyt_logo_dark)
             }
-            sectionView.setOnClickListener {
+
+            itemView.setOnClickListener {
                 onArticleClickedCallback.invoke(article)
             }
         }

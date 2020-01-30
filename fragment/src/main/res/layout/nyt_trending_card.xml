@@ -30,7 +30,7 @@
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintBottom_toBottomOf="parent"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/nyt_logo_dark"
+            tools:src="@drawable/nyt_logo_dark"
             />
 
         <TextView
