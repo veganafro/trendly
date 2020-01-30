@@ -32,6 +32,7 @@ class NytTrendingFragment @Inject constructor(
 
     private val viewModel: NytTrendingViewModel by viewModels { viewModelFactory }
 
+    @Suppress("ReplaceCallWithBinaryOperator")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

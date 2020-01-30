@@ -20,7 +20,7 @@ data class NytTopic(
         @Json(name = "byline")
         val byline: String,
         @Json(name = "media")
-        val photos: MutableList<Photos>
+        val media: MutableList<Photos>
     ) {
 
         @JsonClass(generateAdapter = true)

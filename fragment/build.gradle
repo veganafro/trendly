@@ -38,7 +38,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.1.0'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
@@ -47,5 +47,6 @@ dependencies {
     api "com.google.android.material:material:$material_version"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_refresh_version"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
-    implementation "androidx.fragment:fragment-ktx:1.1.0"
+    implementation "androidx.fragment:fragment-ktx:$fragment_extensions_version"
+    implementation "io.coil-kt:coil:$coil_version"
 }
