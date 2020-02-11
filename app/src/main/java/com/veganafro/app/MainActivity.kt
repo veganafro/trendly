@@ -18,10 +18,10 @@ class MainActivity
     private val dagger: TrendlyComponent = DaggerTrendlyComponent.create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
         // insert the fragment factory
         supportFragmentManager.fragmentFactory = dagger.fragmentFactory()
+
+        super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
 
