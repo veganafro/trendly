@@ -70,7 +70,7 @@ class NytTrendingAdapter constructor(
         }
 
         override fun areContentsTheSame(oldItem: NytTopic.Article, newItem: NytTopic.Article): Boolean {
-            return oldItem.title == newItem.title
+            return oldItem.title == newItem.title && oldItem.url == newItem.url && oldItem.section == newItem.section
         }
 
     }

@@ -1,6 +1,7 @@
 package com.veganafro.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,27 +75,28 @@ class NytTrendingFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // prevent the visibility from being set to GONE if we're being restored from an existing state
+        // if we're being restored from an existing state, there's no need to fetch new data
         savedInstanceState?.let {} ?: apply {
-            view.nyt_trending_recycler_view
-                .apply {
-                    // this optimization tells the recycler view that all the views it's displaying
-                    // are the same size, so it can avoid inflating the whole view layout when its contents
-                    // change
-                    setHasFixedSize(true)
-
-                    visibility = View.GONE
-
-                    adapter?.let {} ?: apply {
-                        adapter = viewAdapter
-                    }
-                    layoutManager?.let {} ?: apply {
-                        layoutManager = viewManager
-                    }
-                }
             viewModel.fetchMostShared()
             swipeRefreshContainer?.isRefreshing = true
         }
+
+        view.nyt_trending_recycler_view
+            .apply {
+                // this optimization tells the recycler view that all the views it's displaying
+                // are the same size, so it can avoid inflating the whole view layout when its contents
+                // change
+                setHasFixedSize(true)
+
+                visibility = View.GONE
+
+                adapter?.let {} ?: apply {
+                    adapter = viewAdapter
+                }
+                layoutManager?.let {} ?: apply {
+                    layoutManager = viewManager
+                }
+            }
     }
 
     override fun onDestroyView() {
@@ -105,11 +107,6 @@ class NytTrendingFragment @Inject constructor(
 
         swipeRefreshContainer?.isRefreshing = false
         swipeRefreshContainer = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.getMostShared().removeObservers(this)
     }
 
     private fun onArticleClickedCallback(article: NytTopic.Article) {
